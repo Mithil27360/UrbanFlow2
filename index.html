@@ -3,268 +3,814 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UrbanFlow2 Demo - AI-Powered Supply Chain Optimization</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css">
+    <title>UrbanFlow2 | Smart India Hackathon 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1e40af;
+            --secondary: #0891b2;
+            --accent: #059669;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Header */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .header-glass.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(30, 64, 175, 0.2);
+        }
+        
+        /* Counter */
+        .counter {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--primary);
+        }
+        
+        /* Timeline */
+        .timeline-container {
+            position: relative;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 31px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #1e40af, #0891b2);
+            opacity: 0.2;
+        }
+        
+        .timeline-dot {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af, #0891b2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px rgba(30, 64, 175, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
+        }
+        
+        /* Problem-Solution */
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+        }
+        
+        .split-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            bottom: 10%;
+            width: 1px;
+            background: linear-gradient(180deg, transparent, #1e40af, transparent);
+            transform: translateX(-50%);
+        }
+        
+        @media (max-width: 768px) {
+            .split-container {
+                grid-template-columns: 1fr;
+            }
+            .split-container::before {
+                display: none;
+            }
+        }
+        
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e40af15, #0891b215);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 24px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Icon Circle */
+        .icon-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af15, #0891b215);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stat Card */
+        .stat-card {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(30, 64, 175, 0.12);
+        }
+        
+        /* Compliance Grid */
+        .compliance-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .compliance-card:hover {
+            border-color: rgba(30, 64, 175, 0.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Stagger delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        .delay-600 { transition-delay: 0.6s; }
+        
+        /* Hero Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-title {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
+        .hero-subtitle {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .hero-cta {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+            opacity: 0;
+        }
+        
+        /* Subtle floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Grid pattern background */
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(30, 64, 175, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 64, 175, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        /* Professional India colors accent */
+        .india-gradient {
+            background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+            height: 4px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <h1 class="brand-name">UrbanFlow2 Logistics Engine</h1>
-                    <span class="tagline">AI-Powered Supply Chain Intelligence</span>
+    <header class="header-glass fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl">🇮🇳</div>
+                    <div>
+                        <div class="text-xl font-bold gradient-text">UrbanFlow2</div>
+                        <div class="text-xs text-gray-600">Smart India Hackathon 2025</div>
+                    </div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn--outline btn--sm" onclick="exportResults()">Export Results</button>
-                </div>
+                <a href="dashboard.html" class="btn-primary flex items-center justify-center">
+                    Check  Demo
+                </a>
             </div>
         </div>
     </header>
-
-    <!-- Main Dashboard -->
-    <main class="dashboard">
-        <div class="container">
-            <!-- Dashboard Header -->
-            <div class="dashboard-header">
-                <h2>Supply Chain Optimization Dashboard</h2>
-                <p>Real-time insights and AI-powered optimization for your logistics network</p>
+    <section class="pt-32 pb-20 px-6 grid-bg">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="badge mb-6 hero-title">Team UrbanFlow2 | TeamID: 104102</div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 hero-title" style="animation-delay: 0.1s;">
+                The Self-Driving<br>
+                <span class="gradient-text">Supply Chain is Here.</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto hero-subtitle">
+                UrbanFlow2 transforms India's logistics from a cost center into a strategic advantage using predictive AI.
+            </p>
+            <div class="hero-cta">
+                <a href="dashboard.html" class="btn-primary text-lg flex items-center justify-center mx-auto max-w-xs">
+                    View Prototype Demo →
+                </a>
             </div>
-
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="costSaved">12.5%</div>
-                    <div class="stat-label">Cost Reduction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="co2Reduced">18%</div>
-                    <div class="stat-label">CO₂ Reduction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="onTimeDelivery">95%</div>
-                    <div class="stat-label">On-Time Delivery</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="vesselsOptimized">250</div>
-                    <div class="stat-label">Vessels Optimized</div>
-                </div>
-            </div>
-
-            <!-- Optimization Control Panel -->
-            <div class="optimization-panel card">
-                <div class="card__header">
-                    <h3>AI Optimization Engine</h3>
-                    <div class="optimization-status" id="optimizationStatus">
-                        <span class="status status--info">Ready</span>
+        </div>
+    </section>
+    <section class="py-16 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="stat-card reveal delay-100">
+                    <div class="counter">
+                        <span class="counter-num" data-target="30">0</span>%
                     </div>
+                    <div class="text-gray-600 font-semibold mt-2">Cost Reduction</div>
                 </div>
-                <div class="card__body">
-                    <div class="optimization-controls">
-                        <button class="btn btn--primary btn--lg" id="runOptimization" onclick="runOptimization()">
-                            <span class="btn-text">Run Optimization</span>
-                            <span class="btn-spinner hidden">
-                                <div class="spinner"></div>
-                            </span>
-                        </button>
-                        <div class="optimization-options">
-                            <label class="form-label">
-                                <input type="checkbox" checked> Include GNN Predictions
-                            </label>
-                            <label class="form-label">
-                                <input type="checkbox" checked> Apply ALNS Refinement
-                            </label>
-                            <label class="form-label">
-                                <input type="checkbox" checked> Tabu Search Enhancement
-                            </label>
-                        </div>
+                <div class="stat-card reveal delay-200">
+                    <div class="counter">
+                        <span class="counter-num" data-target="50">0</span>%
                     </div>
-                    
-                    <!-- Progress Indicator -->
-                    <div class="progress-container hidden" id="progressContainer">
-                        <div class="progress-info">
-                            <div class="progress-step" id="progressStep">Initializing...</div>
-                            <div class="progress-description" id="progressDescription">Preparing optimization engine...</div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                            <div class="progress-percentage" id="progressPercentage">0%</div>
-                        </div>
+                    <div class="text-gray-600 font-semibold mt-2">Faster Planning</div>
+                </div>
+                <div class="stat-card reveal delay-300">
+                    <div class="counter">
+                        <span class="counter-num" data-target="15">0</span>%
                     </div>
+                    <div class="text-gray-600 font-semibold mt-2">Emission Saved</div>
+                </div>
+                <div class="stat-card reveal delay-400">
+                    <div class="counter">
+                        <span class="counter-num" data-target="100">0</span>%
+                    </div>
+                    <div class="text-gray-600 font-semibold mt-2">Feasibility</div>
                 </div>
             </div>
-
-            <!-- Main Content Grid -->
-            <div class="content-grid">
-                <!-- Interactive Map -->
-                <div class="map-section card">
-                    <div class="card__header">
-                        <h3>Logistics Network Map</h3>
-                        <div class="map-controls">
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('ports')">Ports</button>
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('plants')">Plants</button>
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('routes')">Routes</button>
-                        </div>
-                    </div>
-                    <div class="card__body">
-                        <div id="logistics-map" style="height: 400px; position: relative;"></div>
-                    </div>
-                </div>
-
-                <!-- Performance Charts -->
-                <div class="charts-section card">
-                    <div class="card__header">
-                        <h3>Performance Metrics</h3>
-                        <select class="form-control" style="width: auto;" onchange="updateChartPeriod(this.value)">
-                            <option value="7d">Last 7 Days</option>
-                            <option value="30d">Last 30 Days</option>
-                            <option value="90d">Last 90 Days</option>
-                        </select>
-                    </div>
-                    <div class="card__body">
-                        <div class="chart-container" style="position: relative; height: 300px;">
-                            <canvas id="performanceChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </section>
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    The <span class="gradient-text">Challenge</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Eastern India's steel industry faces severe supply chain bottlenecks rooted in outdated planning tools.
+                </p>
             </div>
-
-            <!-- Results Section -->
-            <div class="results-section hidden" id="resultsSection">
-                <div class="results-header">
-                    <h3>Optimization Results</h3>
-                    <div class="results-timestamp" id="resultsTimestamp"></div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-8 reveal delay-100">
+                    <div class="icon-circle">📊</div>
+                    <h3 class="text-2xl font-bold mb-4">Inefficient Planning</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Manual SAP & Excel workflows are static, reactive, and lack real-time adaptability, leading to stockouts and delays.
+                    </p>
                 </div>
                 
-                <div class="results-grid">
-                    <!-- Before vs After Comparison -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>Cost Analysis</h4>
+                <div class="card p-8 reveal delay-200">
+                    <div class="icon-circle">💰</div>
+                    <h3 class="text-2xl font-bold mb-4">High Costs & Wastage</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Crippling demurrage penalties, excess fuel consumption, and material degradation are common.
+                    </p>
+                </div>
+                
+                <div class="card p-8 reveal delay-300">
+                    <div class="icon-circle">🚧</div>
+                    <h3 class="text-2xl font-bold mb-4">Infrastructure Constraints</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Congested rail networks and port bottlenecks cause delays and increase freight costs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    How <span class="gradient-text">UrbanFlow2</span> Solves This
+                </h2>
+                <p class="text-xl text-gray-600">Precision solutions for every pain point</p>
+            </div>
+            
+            <div class="space-y-12">
+                <div class="card p-10 reveal">
+                    <div class="split-container">
+                        <div class="reveal-left">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide">❌ Problem</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">Inefficient Planning</h3>
+                            <p class="text-gray-600">Manual, static workflows</p>
                         </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="costBefore">$2,500,000</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="costAfter">$1,750,000</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="costSavings">-30%</span>
-                                    <span class="savings-label">Savings</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Time Efficiency -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>Delivery Time</h4>
-                        </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="timeBefore">168 hrs</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="timeAfter">142 hrs</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="timeSavings">-15.5%</span>
-                                    <span class="savings-label">Improvement</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Environmental Impact -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>CO₂ Emissions</h4>
-                        </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="emissionsBefore">1,250 tons</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="emissionsAfter">1,025 tons</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="emissionsSavings">-18%</span>
-                                    <span class="savings-label">Reduction</span>
-                                </div>
-                            </div>
+                        <div class="reveal-right">
+                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide">✅ Solution</span>
+                            <h3 class="text-2xl font-bold gradient-text mt-2 mb-3">Dynamic Predictive Scheduling</h3>
+                            <p class="text-gray-600">AI-powered automation</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- AI Explanation Panel -->
-                <div class="ai-explanation card">
-                    <div class="card__header">
-                        <h4>🤖 AI Explanation (XAI)</h4>
+                
+                <div class="card p-10 reveal delay-100">
+                    <div class="split-container">
+                        <div class="reveal-left">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide">❌ Problem</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">Infrastructure Constraints</h3>
+                            <p class="text-gray-600">Congestion and bottlenecks</p>
+                        </div>
+                        <div class="reveal-right">
+                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide">✅ Solution</span>
+                            <h3 class="text-2xl font-bold gradient-text mt-2 mb-3">Intelligent Resource Allocation</h3>
+                            <p class="text-gray-600">Optimized routing algorithms</p>
+                        </div>
                     </div>
-                    <div class="card__body">
-                        <div class="explanation-content" id="aiExplanation">
-                            <p><strong>Key Optimizations Applied:</strong></p>
-                            <ul>
-                                <li>🔄 <strong>Route Optimization:</strong> Reduced total distance by 12% through intelligent waypoint selection</li>
-                                <li>⏰ <strong>Scheduling Enhancement:</strong> Minimized port congestion with staggered arrival times</li>
-                                <li>🚢 <strong>Vessel Allocation:</strong> Optimized cargo distribution across 15 vessels for maximum efficiency</li>
-                                <li>🎯 <strong>Demurrage Reduction:</strong> Strategic timing reduced penalties by 75%</li>
-                                <li>🌱 <strong>Emission Control:</strong> Fuel-efficient routing reduced CO₂ emissions by 225 tons</li>
-                            </ul>
-                            <p><strong>Confidence Level:</strong> 94% | <strong>Algorithm:</strong> Hybrid GA-ALNS with Tabu refinement</p>
+                </div>
+                
+                <div class="card p-10 reveal delay-200">
+                    <div class="split-container">
+                        <div class="reveal-left">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide">❌ Problem</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">High Transportation Costs</h3>
+                            <p class="text-gray-600">Wasteful routing and delays</p>
+                        </div>
+                        <div class="reveal-right">
+                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide">✅ Solution</span>
+                            <h3 class="text-2xl font-bold gradient-text mt-2 mb-3">30% Cost Reduction</h3>
+                            <p class="text-gray-600">Optimized logistics paths</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card p-10 reveal delay-300">
+                    <div class="split-container">
+                        <div class="reveal-left">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide">❌ Problem</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">Environmental Impact</h3>
+                            <p class="text-gray-600">Excess emissions and waste</p>
+                        </div>
+                        <div class="reveal-right">
+                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide">✅ Solution</span>
+                            <h3 class="text-2xl font-bold gradient-text mt-2 mb-3">Optimized Sustainability</h3>
+                            <p class="text-gray-600">15% fuel & emission reduction</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card p-10 reveal delay-400">
+                    <div class="split-container">
+                        <div class="reveal-left">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide">❌ Problem</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">Scalability Limits</h3>
+                            <p class="text-gray-600">Legacy system constraints</p>
+                        </div>
+                        <div class="reveal-right">
+                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide">✅ Solution</span>
+                            <h3 class="text-2xl font-bold gradient-text mt-2 mb-3">Cloud-Ready Architecture</h3>
+                            <p class="text-gray-600">Modular and scalable design</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- File Upload Section -->
-            <div class="upload-section card">
-                <div class="card__header">
-                    <h3>Data Integration</h3>
+        </div>
+    </section>
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Key Features</span>
+                </h2>
+                <p class="text-xl text-gray-600">Advanced AI-powered logistics technology</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-8 reveal delay-100">
+                    <div class="icon-circle">🧠</div>
+                    <h3 class="text-xl font-bold mb-3">Predictive GNN</h3>
+                    <p class="text-gray-600 text-sm">Graph Neural Networks for demand forecasting</p>
                 </div>
-                <div class="card__body">
-                    <div class="upload-area" onclick="triggerFileUpload()">
-                        <div class="upload-icon">📁</div>
-                        <div class="upload-text">
-                            <p>Click to upload SAP/Excel files or drag & drop</p>
-                            <small>Supports: .xlsx, .xls, .csv, .sap</small>
-                        </div>
-                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileUpload(this)">
+                
+                <div class="card p-8 reveal delay-200">
+                    <div class="icon-circle">⚙️</div>
+                    <h3 class="text-xl font-bold mb-3">Adaptive ALNS</h3>
+                    <p class="text-gray-600 text-sm">Advanced routing optimization algorithms</p>
+                </div>
+                
+                <div class="card p-8 reveal delay-300">
+                    <div class="icon-circle">⚡</div>
+                    <h3 class="text-xl font-bold mb-3">Real-Time DRL Agent</h3>
+                    <p class="text-gray-600 text-sm">Deep Reinforcement Learning decisions</p>
+                </div>
+                
+                <div class="card p-8 reveal delay-400">
+                    <div class="icon-circle">🔍</div>
+                    <h3 class="text-xl font-bold mb-3">Explainable AI (XAI)</h3>
+                    <p class="text-gray-600 text-sm">Transparent decision-making process</p>
+                </div>
+                
+                <div class="card p-8 reveal delay-500">
+                    <div class="icon-circle">📱</div>
+                    <h3 class="text-xl font-bold mb-3">QR & IoT Tracking</h3>
+                    <p class="text-gray-600 text-sm">Real-time asset visibility system</p>
+                </div>
+                
+                <div class="card p-8 reveal delay-600">
+                    <div class="icon-circle">🔗</div>
+                    <h3 class="text-xl font-bold mb-3">SAP/Excel Integration</h3>
+                    <p class="text-gray-600 text-sm">Seamless legacy system compatibility</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    How It <span class="gradient-text">Works</span>
+                </h2>
+                <p class="text-xl text-gray-600">Four-step transformation process</p>
+            </div>
+            
+            <div class="timeline-container space-y-12">
+                <div class="timeline-line"></div>
+                
+                <div class="flex gap-6 reveal delay-100">
+                    <div class="timeline-dot flex-shrink-0">1</div>
+                    <div class="card p-8 flex-1">
+                        <h3 class="text-2xl font-bold mb-3">Data Ingestion & Tracking</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Collect real-time data from SAP, Excel, IoT sensors, and QR codes across the entire supply chain network.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6 reveal delay-200">
+                    <div class="timeline-dot flex-shrink-0" style="background: linear-gradient(135deg, #0891b2, #06b6d4);">2</div>
+                    <div class="card p-8 flex-1">
+                        <h3 class="text-2xl font-bold mb-3">GNN Prediction</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Graph Neural Networks analyze patterns and predict demand, delays, and resource requirements with high accuracy.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6 reveal delay-300">
+                    <div class="timeline-dot flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4, #0284c7);">3</div>
+                    <div class="card p-8 flex-1">
+                        <h3 class="text-2xl font-bold mb-3">GA & ALNS Optimization</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Genetic Algorithms and Adaptive Large Neighborhood Search optimize routes, schedules, and resource allocation.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6 reveal delay-400">
+                    <div class="timeline-dot flex-shrink-0" style="background: linear-gradient(135deg, #0284c7, #1e40af);">4</div>
+                    <div class="card p-8 flex-1">
+                        <h3 class="text-2xl font-bold mb-3">XAI-Powered Dashboard</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Visualize insights, understand AI decisions, and take action through an intuitive, explainable interface.
+                        </p>
                     </div>
                 </div>
             </div>
-
-           
         </div>
-    </main>
-
-    
-
-    <!-- Success Notification -->
-    <div class="notification hidden" id="notification">
-        <div class="notification-content">
-            <div class="notification-icon">✅</div>
-            <div class="notification-text"></div>
+    </section>
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    UN <span class="gradient-text">SDG Alignment</span>
+                </h2>
+                <p class="text-xl text-gray-600">Contributing to global sustainability goals</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-10 text-center reveal delay-100">
+                    <div class="text-6xl mb-4">🏗️</div>
+                    <h3 class="text-2xl font-bold mb-3">SDG 9</h3>
+                    <p class="text-gray-600">Industry, Innovation & Infrastructure</p>
+                </div>
+                
+                <div class="card p-10 text-center reveal delay-200">
+                    <div class="text-6xl mb-4">♻️</div>
+                    <h3 class="text-2xl font-bold mb-3">SDG 12</h3>
+                    <p class="text-gray-600">Responsible Consumption & Production</p>
+                </div>
+                
+                <div class="card p-10 text-center reveal delay-300">
+                    <div class="text-6xl mb-4">🌱</div>
+                    <h3 class="text-2xl font-bold mb-3">SDG 13</h3>
+                    <p class="text-gray-600">Climate Action</p>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <script src="app.js"></script>
+    </section>
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <div class="india-gradient mb-6"></div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    Aligned with <span class="gradient-text">National Priorities</span>
+                </h2>
+                <p class="text-xl text-gray-600">Full compliance with Indian government policies and global standards</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="compliance-card reveal delay-100">
+                    <div class="text-4xl mb-4">🌱</div>
+                    <h3 class="text-lg font-bold mb-3">Environmental & Sustainability</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ National Logistics Policy 2025</li>
+                        <li>✓ Indian Ports Bill 2025</li>
+                        <li>✓ ISO 14001:2015</li>
+                        <li>✓ Carbon Emission Guidelines</li>
+                    </ul>
+                </div>
+                
+                <div class="compliance-card reveal delay-200">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="text-lg font-bold mb-3">Industrial Safety</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ ISO 45001:2023</li>
+                        <li>✓ DGMS Circulars</li>
+                        <li>✓ Factory Act Compliance</li>
+                        <li>✓ Worker Safety Standards</li>
+                    </ul>
+                </div>
+                
+                <div class="compliance-card reveal delay-300">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="text-lg font-bold mb-3">Cybersecurity</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ DPDP Rules 2025</li>
+                        <li>✓ ISO 27001:2022</li>
+                        <li>✓ CERT-In Guidelines</li>
+                        <li>✓ Data Localization</li>
+                    </ul>
+                </div>
+                
+                <div class="compliance-card reveal delay-400">
+                    <div class="text-4xl mb-4">📦</div>
+                    <h3 class="text-lg font-bold mb-3">National Logistics Policy</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Multimodal Integration</li>
+                        <li>✓ Cost Optimization</li>
+                        <li>✓ Technology Adoption</li>
+                        <li>✓ Sustainability Goals</li>
+                    </ul>
+                </div>
+                
+                <div class="compliance-card reveal delay-500">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h3 class="text-lg font-bold mb-3">PM GatiShakti</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Infrastructure Integration</li>
+                        <li>✓ Multimodal Connectivity</li>
+                        <li>✓ Last-Mile Delivery</li>
+                        <li>✓ Digital Ecosystem</li>
+                    </ul>
+                </div>
+                
+                <div class="compliance-card reveal delay-600">
+                    <div class="text-4xl mb-4">🇮🇳</div>
+                    <h3 class="text-lg font-bold mb-3">Make in India</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Indigenous Development</li>
+                        <li>✓ Local Manufacturing</li>
+                        <li>✓ Skill Development</li>
+                        <li>✓ Export Competitiveness</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-24 px-6 bg-gradient-to-br from-blue-900 to-cyan-900 text-white">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6">
+                Transform India's Supply Chain
+            </h2>
+            <p class="text-xl mb-10 text-blue-100">
+                Experience the power of AI-driven logistics optimization for government and enterprise.
+            </p>
+            <a href="dashboard.html" class="bg-white text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition-all inline-block">
+                Access Prototype Demo
+            </a>
+        </div>
+    </section>
+    <footer class="py-8 px-6 bg-slate-900 text-white">
+        <div class="india-gradient mb-6"></div>
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="text-2xl font-bold mb-2">SMART INDIA HACKATHON 2025</div>
+            <p class="text-gray-400 text-sm">© 2025 UrbanFlow2 | Smart India Hackathon</p>
+            <p class="text-gray-500 text-xs mt-2">Team ID: 104102 </p>
+        </div>
+    </footer>
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.querySelectorAll('.reveal, .reveal-scale, .reveal-left, .reveal-right').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 1500;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target;
+                }
+            };
+            
+            updateCounter();
+        }
+        
+        // Observe counters
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target.querySelector('.counter-num');
+                    if (counter && counter.textContent === '0') {
+                        animateCounter(counter);
+                    }
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.stat-card').forEach(el => {
+            counterObserver.observe(el);
+        });
+        
+        // Header scroll effect
+        const header = document.querySelector('.header-glass');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
