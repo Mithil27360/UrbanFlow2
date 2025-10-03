@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanFlow2 Demo - AI-Powered Supply Chain Optimization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="brand-name">UrbanFlow2 Logistics Engine</h1>
+                    <span class="tagline">AI-Powered Supply Chain Intelligence</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn--outline btn--sm" onclick="exportResults()">Export Results</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h2>Supply Chain Optimization Dashboard</h2>
+                <p>Real-time insights and AI-powered optimization for your logistics network</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="costSaved">12.5%</div>
+                    <div class="stat-label">Cost Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="co2Reduced">18%</div>
+                    <div class="stat-label">CO₂ Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="onTimeDelivery">95%</div>
+                    <div class="stat-label">On-Time Delivery</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="vesselsOptimized">250</div>
+                    <div class="stat-label">Vessels Optimized</div>
+                </div>
+            </div>
+
+            <!-- Optimization Control Panel -->
+            <div class="optimization-panel card">
+                <div class="card__header">
+                    <h3>AI Optimization Engine</h3>
+                    <div class="optimization-status" id="optimizationStatus">
+                        <span class="status status--info">Ready</span>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="optimization-controls">
+                        <button class="btn btn--primary btn--lg" id="runOptimization" onclick="runOptimization()">
+                            <span class="btn-text">Run Optimization</span>
+                            <span class="btn-spinner hidden">
+                                <div class="spinner"></div>
+                            </span>
+                        </button>
+                        <div class="optimization-options">
+                            <label class="form-label">
+                                <input type="checkbox" checked> Include GNN Predictions
+                            </label>
+                            <label class="form-label">
+                                <input type="checkbox" checked> Apply ALNS Refinement
+                            </label>
+                            <label class="form-label">
+                                <input type="checkbox" checked> Tabu Search Enhancement
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="progress-container hidden" id="progressContainer">
+                        <div class="progress-info">
+                            <div class="progress-step" id="progressStep">Initializing...</div>
+                            <div class="progress-description" id="progressDescription">Preparing optimization engine...</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <div class="progress-percentage" id="progressPercentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="content-grid">
+                <!-- Interactive Map -->
+                <div class="map-section card">
+                    <div class="card__header">
+                        <h3>Logistics Network Map</h3>
+                        <div class="map-controls">
+                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('ports')">Ports</button>
+                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('plants')">Plants</button>
+                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('routes')">Routes</button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div id="logistics-map" style="height: 400px; position: relative;"></div>
+                    </div>
+                </div>
+
+                <!-- Performance Charts -->
+                <div class="charts-section card">
+                    <div class="card__header">
+                        <h3>Performance Metrics</h3>
+                        <select class="form-control" style="width: auto;" onchange="updateChartPeriod(this.value)">
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section hidden" id="resultsSection">
+                <div class="results-header">
+                    <h3>Optimization Results</h3>
+                    <div class="results-timestamp" id="resultsTimestamp"></div>
+                </div>
+                
+                <div class="results-grid">
+                    <!-- Before vs After Comparison -->
+                    <div class="comparison-card card">
+                        <div class="card__header">
+                            <h4>Cost Analysis</h4>
+                        </div>
+                        <div class="card__body">
+                            <div class="comparison-row">
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Before</div>
+                                    <div class="comparison-value" id="costBefore">$2,500,000</div>
+                                </div>
+                                <div class="comparison-arrow">→</div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">After</div>
+                                    <div class="comparison-value success" id="costAfter">$1,750,000</div>
+                                </div>
+                                <div class="comparison-savings">
+                                    <span class="savings-amount" id="costSavings">-30%</span>
+                                    <span class="savings-label">Savings</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Efficiency -->
+                    <div class="comparison-card card">
+                        <div class="card__header">
+                            <h4>Delivery Time</h4>
+                        </div>
+                        <div class="card__body">
+                            <div class="comparison-row">
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Before</div>
+                                    <div class="comparison-value" id="timeBefore">168 hrs</div>
+                                </div>
+                                <div class="comparison-arrow">→</div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">After</div>
+                                    <div class="comparison-value success" id="timeAfter">142 hrs</div>
+                                </div>
+                                <div class="comparison-savings">
+                                    <span class="savings-amount" id="timeSavings">-15.5%</span>
+                                    <span class="savings-label">Improvement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environmental Impact -->
+                    <div class="comparison-card card">
+                        <div class="card__header">
+                            <h4>CO₂ Emissions</h4>
+                        </div>
+                        <div class="card__body">
+                            <div class="comparison-row">
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Before</div>
+                                    <div class="comparison-value" id="emissionsBefore">1,250 tons</div>
+                                </div>
+                                <div class="comparison-arrow">→</div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">After</div>
+                                    <div class="comparison-value success" id="emissionsAfter">1,025 tons</div>
+                                </div>
+                                <div class="comparison-savings">
+                                    <span class="savings-amount" id="emissionsSavings">-18%</span>
+                                    <span class="savings-label">Reduction</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Explanation Panel -->
+                <div class="ai-explanation card">
+                    <div class="card__header">
+                        <h4>🤖 AI Explanation (XAI)</h4>
+                    </div>
+                    <div class="card__body">
+                        <div class="explanation-content" id="aiExplanation">
+                            <p><strong>Key Optimizations Applied:</strong></p>
+                            <ul>
+                                <li>🔄 <strong>Route Optimization:</strong> Reduced total distance by 12% through intelligent waypoint selection</li>
+                                <li>⏰ <strong>Scheduling Enhancement:</strong> Minimized port congestion with staggered arrival times</li>
+                                <li>🚢 <strong>Vessel Allocation:</strong> Optimized cargo distribution across 15 vessels for maximum efficiency</li>
+                                <li>🎯 <strong>Demurrage Reduction:</strong> Strategic timing reduced penalties by 75%</li>
+                                <li>🌱 <strong>Emission Control:</strong> Fuel-efficient routing reduced CO₂ emissions by 225 tons</li>
+                            </ul>
+                            <p><strong>Confidence Level:</strong> 94% | <strong>Algorithm:</strong> Hybrid GA-ALNS with Tabu refinement</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section card">
+                <div class="card__header">
+                    <h3>Data Integration</h3>
+                </div>
+                <div class="card__body">
+                    <div class="upload-area" onclick="triggerFileUpload()">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">
+                            <p>Click to upload SAP/Excel files or drag & drop</p>
+                            <small>Supports: .xlsx, .xls, .csv, .sap</small>
+                        </div>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileUpload(this)">
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+    </main>
+
+    
+
+    <!-- Success Notification -->
+    <div class="notification hidden" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">✅</div>
+            <div class="notification-text"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
