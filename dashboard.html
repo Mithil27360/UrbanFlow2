@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UrbanFlow2 Demo - AI-Powered Supply Chain Optimization</title>
+    <title>UrbanFlow2 - Real Cost-Optimal Supply Chain Optimization System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
@@ -15,11 +16,17 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <h1 class="brand-name">UrbanFlow2 Logistics Engine</h1>
-                    <span class="tagline">AI-Powered Supply Chain Intelligence</span>
+                    <h1 class="brand-name">UrbanFlow2</h1>
+                    <span class="tagline">Real Cost-Optimal Supply Chain Optimization System</span>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn--outline btn--sm" onclick="exportResults()">Export Results</button>
+                    <button class="btn btn--outline btn--sm" onclick="downloadSampleData()">📋 Download Sample Data</button>
+                    <select class="form-control" id="languageSelect" onchange="changeLanguage()" style="width: auto;">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                    </select>
+                    <button class="btn btn--secondary btn--sm" onclick="resetSystem()" title="Reset All Data">🔄 Reset System</button>
+                    <button class="btn btn--primary btn--sm" onclick="exportResults()" id="exportBtn" disabled>📊 Export Results</button>
                 </div>
             </div>
         </div>
@@ -28,240 +35,1203 @@
     <!-- Main Dashboard -->
     <main class="dashboard">
         <div class="container">
-            <!-- Dashboard Header -->
-            <div class="dashboard-header">
-                <h2>Supply Chain Optimization Dashboard</h2>
-                <p>Real-time insights and AI-powered optimization for your logistics network</p>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="costSaved">12.5%</div>
-                    <div class="stat-label">Cost Reduction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="co2Reduced">18%</div>
-                    <div class="stat-label">CO₂ Reduction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="onTimeDelivery">95%</div>
-                    <div class="stat-label">On-Time Delivery</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="vesselsOptimized">250</div>
-                    <div class="stat-label">Vessels Optimized</div>
-                </div>
-            </div>
-
-            <!-- Optimization Control Panel -->
-            <div class="optimization-panel card">
+            <!-- System Status -->
+            <div class="system-status card">
                 <div class="card__header">
-                    <h3>AI Optimization Engine</h3>
-                    <div class="optimization-status" id="optimizationStatus">
-                        <span class="status status--info">Ready</span>
+                    <h2>🚀 UrbanFlow2 - Real Algorithm Status Dashboard</h2>
+                    <div class="system-health">
+                        <span class="status status--success" id="systemHealth">All Systems Operational</span>
+                        <div class="system-metrics">
+                            <span class="metric-item">CPU: <span id="cpuUsage">0%</span></span>
+                            <span class="metric-item">Memory: <span id="memoryUsage">0%</span></span>
+                            <span class="metric-item">Processing: <span id="processingTime">0ms</span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="card__body">
-                    <div class="optimization-controls">
-                        <button class="btn btn--primary btn--lg" id="runOptimization" onclick="runOptimization()">
-                            <span class="btn-text">Run Optimization</span>
-                            <span class="btn-spinner hidden">
-                                <div class="spinner"></div>
-                            </span>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">Data Validation Engine:</span>
+                            <span class="status-value" id="dataStatus">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Graph Neural Network:</span>
+                            <span class="status-value" id="gnnStatus">Standby</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Genetic Algorithm:</span>
+                            <span class="status-value" id="gaStatus">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">ALNS + Tabu Search:</span>
+                            <span class="status-value" id="alnsStatus">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Cost Calculation Engine:</span>
+                            <span class="status-value" id="complianceStatus">Active</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Optimization Pipeline:</span>
+                            <span class="status-value" id="securityStatus">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase Progress -->
+            <div class="phase-progress">
+                <div class="phase active" data-phase="1">
+                    <div class="phase-icon">📁</div>
+                    <div class="phase-label">Data Upload & ETL Validation</div>
+                    <div class="phase-status">Active</div>
+                    <div class="phase-substeps">
+                        <div class="substep" id="substep-parse">Parse & Clean</div>
+                        <div class="substep" id="substep-validate">Schema Validation</div>
+                        <div class="substep" id="substep-relationships">Relationship Check</div>
+                    </div>
+                </div>
+                <div class="phase" data-phase="2">
+                    <div class="phase-icon">🧠</div>
+                    <div class="phase-label">GNN Delay Prediction</div>
+                    <div class="phase-status">Pending</div>
+                    <div class="phase-substeps">
+                        <div class="substep" id="substep-graph">Graph Construction</div>
+                        <div class="substep" id="substep-features">Feature Engineering</div>
+                        <div class="substep" id="substep-predictions">Delay Predictions</div>
+                    </div>
+                </div>
+                <div class="phase" data-phase="3">
+                    <div class="phase-icon">🧬</div>
+                    <div class="phase-label">Real Multi-Algorithm Optimization</div>
+                    <div class="phase-status">Pending</div>
+                    <div class="phase-substeps">
+                        <div class="substep" id="substep-ga">GA Evolution</div>
+                        <div class="substep" id="substep-alns">ALNS Refinement</div>
+                        <div class="substep" id="substep-tabu">Tabu Polish</div>
+                    </div>
+                </div>
+                <div class="phase" data-phase="4">
+                    <div class="phase-icon">📊</div>
+                    <div class="phase-label">Results & Cost Analysis</div>
+                    <div class="phase-status">Pending</div>
+                    <div class="phase-substeps">
+                        <div class="substep" id="substep-results">Calculate Results</div>
+                        <div class="substep" id="substep-explain">Generate Explanations</div>
+                        <div class="substep" id="substep-compliance">Export Schedule</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical System Alert -->
+            <div class="alert alert--warning" id="validationAlert" style="display: none;">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h4>Real Optimization Blocked</h4>
+                    <p>Complete data validation required before REAL cost optimization can proceed. Upload and validate all required datasets with minimum 70% data completeness to enable genuine algorithm execution.</p>
+                </div>
+            </div>
+
+            <!-- Data Upload Section -->
+            <div class="upload-section card">
+                <div class="card__header">
+                    <h3>📁 Enterprise Dataset Upload & Real-Time ETL Processing</h3>
+                    <div class="upload-controls">
+                        <div class="upload-progress">
+                            <span class="progress-text" id="uploadProgress">0/6 Datasets Uploaded</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="uploadProgressBar"></div>
+                            </div>
+                            <span class="completeness-indicator" id="completenessIndicator">0% Complete</span>
+                        </div>
+                        <button class="btn btn--primary btn--sm" id="optimizeBtn" onclick="runFullOptimization()" disabled>
+                            🚀 Run REAL Cost Optimization
                         </button>
-                        <div class="optimization-options">
-                            <label class="form-label">
-                                <input type="checkbox" checked> Include GNN Predictions
-                            </label>
-                            <label class="form-label">
-                                <input type="checkbox" checked> Apply ALNS Refinement
-                            </label>
-                            <label class="form-label">
-                                <input type="checkbox" checked> Tabu Search Enhancement
-                            </label>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="validation-summary" id="validationSummary">
+                        <div class="validation-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Total Records:</span>
+                                <span class="stat-value" id="totalRecords">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Valid Datasets:</span>
+                                <span class="stat-value" id="validDatasets">0/6</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Data Quality Score:</span>
+                                <span class="stat-value" id="qualityScore">0%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Optimization Ready:</span>
+                                <span class="stat-value status status--error" id="optimizationReady">No</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dataset-grid">
+                        <!-- Vessels Dataset -->
+                        <div class="dataset-card" data-dataset="vessels">
+                            <div class="dataset-header">
+                                <h4>🚢 vessels.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Vessel specifications, capacity, and ETA data for cost optimization</p>
+                                <small><strong>Required:</strong> vessel_id*, vessel_name*, capacity_tons*, eta_date*, laydays*, origin_port*, demurrage_rate*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>vessel_id: Unique identifier (text)</li>
+                                        <li>capacity_tons: Numeric > 0 (used in cost calculations)</li>
+                                        <li>eta_date: Future date (YYYY-MM-DD)</li>
+                                        <li>laydays: Integer >= 1 (affects demurrage costs)</li>
+                                        <li>demurrage_rate: Numeric > 0 (₹ per day)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('vessels')">
+                                <div class="upload-icon">🚢</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="vessels" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_vessels"></div>
+                        </div>
+
+                        <!-- Ports Dataset -->
+                        <div class="dataset-card" data-dataset="ports">
+                            <div class="dataset-header">
+                                <h4>⚓ ports.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Port operational parameters and capacity constraints for cost analysis</p>
+                                <small><strong>Required:</strong> port_id*, port_name*, max_capacity_tons*, handling_cost*, storage_cost*, discharge_rate*, current_stock*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>port_id: Unique identifier (text)</li>
+                                        <li>max_capacity_tons: Numeric > 0 (constraint)</li>
+                                        <li>handling_cost, storage_cost: Numeric >= 0 (₹/ton)</li>
+                                        <li>discharge_rate: Numeric > 0 (tons/day)</li>
+                                        <li>current_stock: 0 <= current_stock <= max_capacity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('ports')">
+                                <div class="upload-icon">⚓</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="ports" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_ports"></div>
+                        </div>
+
+                        <!-- Plants Dataset -->
+                        <div class="dataset-card" data-dataset="plants">
+                            <div class="dataset-header">
+                                <h4>🏭 plants.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Manufacturing plant capacity and material requirements</p>
+                                <small><strong>Required:</strong> plant_id*, plant_name*, required_material*, max_capacity*, rail_connectivity*, current_stock*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>plant_id: Unique identifier (text)</li>
+                                        <li>required_material: Valid material type</li>
+                                        <li>max_capacity: Numeric > 0 (tons)</li>
+                                        <li>rail_connectivity: Yes/No (affects routing)</li>
+                                        <li>current_stock: 0 <= current_stock <= max_capacity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('plants')">
+                                <div class="upload-icon">🏭</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="plants" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_plants"></div>
+                        </div>
+
+                        <!-- Routes Dataset -->
+                        <div class="dataset-card" data-dataset="routes">
+                            <div class="dataset-header">
+                                <h4>🛣️ routes.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Transportation routes and rail connectivity for cost calculations</p>
+                                <small><strong>Required:</strong> route_id*, from_port*, to_plant*, rail_cost*, travel_days*, max_capacity*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>route_id: Unique identifier</li>
+                                        <li>from_port: Must exist in ports.csv</li>
+                                        <li>to_plant: Must exist in plants.csv</li>
+                                        <li>rail_cost: Numeric > 0 (₹ per ton)</li>
+                                        <li>travel_days: Integer >= 1</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('routes')">
+                                <div class="upload-icon">🛣️</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="routes" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_routes"></div>
+                        </div>
+
+                        <!-- Costs Dataset -->
+                        <div class="dataset-card" data-dataset="costs">
+                            <div class="dataset-header">
+                                <h4>💰 costs.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Operational costs and pricing parameters for total cost calculation</p>
+                                <small><strong>Required:</strong> cost_type*, port_id*, value*, currency*, effective_date*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>cost_type: handling/storage/ocean_freight/demurrage</li>
+                                        <li>port_id: Must exist in ports.csv</li>
+                                        <li>value: Numeric >= 0 (used in optimization)</li>
+                                        <li>currency: Valid currency code (USD/INR)</li>
+                                        <li>effective_date: Valid date</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('costs')">
+                                <div class="upload-icon">💰</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="costs" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_costs"></div>
+                        </div>
+
+                        <!-- Delays Dataset -->
+                        <div class="dataset-card" data-dataset="delays">
+                            <div class="dataset-header">
+                                <h4>⏰ delays.csv</h4>
+                                <div class="dataset-status">
+                                    <span class="status status--info">Not Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dataset-description">
+                                <p>Historical delay patterns for GNN training and prediction</p>
+                                <small><strong>Required:</strong> port_id*, date*, historical_eta*, actual_arrival*, weather*, congestion*, delay_hours*</small>
+                                <div class="schema-details">
+                                    <strong>Validation Rules:</strong>
+                                    <ul>
+                                        <li>port_id: Must exist in ports.csv</li>
+                                        <li>historical_eta, actual_arrival: Valid timestamps</li>
+                                        <li>weather: Clear/Cloudy/Rain/Storm</li>
+                                        <li>congestion: 0-100 (percentage)</li>
+                                        <li>delay_hours: Numeric >= 0 (for GNN training)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dataset-upload" onclick="triggerFileUpload('delays')">
+                                <div class="upload-icon">⏰</div>
+                                <div class="upload-text">Drop CSV file or click to upload</div>
+                                <input type="file" class="file-input" accept=".csv" data-dataset="delays" style="display: none;">
+                            </div>
+                            <div class="validation-results hidden" id="validation_delays"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Processing Monitor -->
+            <div class="processing-monitor card hidden" id="processingMonitor">
+                <div class="card__header">
+                    <h3>⚡ Real-Time Algorithm Execution Monitor</h3>
+                    <div class="monitor-controls">
+                        <div class="monitor-status">
+                            <span class="status status--warning pulse" id="processingStatus">Processing</span>
+                        </div>
+                        <div class="performance-metrics">
+                            <span class="perf-metric">Speed: <span id="processingSpeed">0</span> ops/sec</span>
+                            <span class="perf-metric">Progress: <span id="algorithmProgress">0%</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="algorithm-pipeline">
+                        <div class="pipeline-step active" id="step-gnn">
+                            <div class="step-icon">🧠</div>
+                            <div class="step-info">
+                                <div class="step-name">Graph Neural Network</div>
+                                <div class="step-description">Building network graph and predicting delays...</div>
+                                <div class="step-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="gnnProgress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pipeline-step" id="step-ga">
+                            <div class="step-icon">🧬</div>
+                            <div class="step-info">
+                                <div class="step-name">Genetic Algorithm</div>
+                                <div class="step-description">Evolving cost-optimal solutions through generations...</div>
+                                <div class="step-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="gaProgress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pipeline-step" id="step-alns">
+                            <div class="step-icon">🔧</div>
+                            <div class="step-info">
+                                <div class="step-name">ALNS Refinement</div>
+                                <div class="step-description">Adaptive large neighborhood search optimization...</div>
+                                <div class="step-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="alnsProgress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pipeline-step" id="step-tabu">
+                            <div class="step-icon">🎯</div>
+                            <div class="step-info">
+                                <div class="step-name">Tabu Search</div>
+                                <div class="step-description">Memory-based final cost optimization...</div>
+                                <div class="step-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="tabuProgress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="real-time-log">
+                        <div class="log-header">
+                            <h4>Live Algorithm Execution Log</h4>
+                            <button class="btn btn--outline btn--sm" onclick="clearLog()">Clear</button>
+                        </div>
+                        <div class="log-content" id="processingLog"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Network Visualization -->
+            <div class="visualization-section card hidden" id="visualizationSection">
+                <div class="card__header">
+                    <h3>🗺️ Live Supply Chain Network & Cost-Optimal Routes</h3>
+                    <div class="map-controls">
+                        <select class="form-control" id="mapLayer" onchange="changeMapLayer()">
+                            <option value="network">Network Overview</option>
+                            <option value="congestion">Congestion Risk (GNN)</option>
+                            <option value="optimization">Optimized Routes</option>
+                            <option value="costs">Cost Analysis</option>
+                        </select>
+                        <button class="btn btn--outline btn--sm" onclick="resetMapView()">🎯 Reset View</button>
+                        <button class="btn btn--outline btn--sm" onclick="toggleRoutes()" id="routeToggle">🛣️ Show Routes</button>
+                        <button class="btn btn--outline btn--sm" onclick="exportMap()">📷 Export Map</button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="map-container">
+                        <div id="supplyChainMap" style="height: 500px; width: 100%;"></div>
+                    </div>
+                    <div class="map-legend">
+                        <div class="legend-category">
+                            <h5>Ports (GNN Risk Level)</h5>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #1FB8CD;"></div>
+                                    <span>Low Risk (&lt;30%)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #FFC185;"></div>
+                                    <span>Medium Risk (30-70%)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #B4413C;"></div>
+                                    <span>High Risk (&gt;70%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="legend-category">
+                            <h5>Cost-Optimal Routes</h5>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #5D878F;"></div>
+                                    <span>Manufacturing Plants</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #964325;"></div>
+                                    <span>Optimized Routes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="network-stats">
+                        <div class="stat-card">
+                            <h5>Active Vessels</h5>
+                            <div class="stat-value" id="activeVessels">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h5>Ports in Network</h5>
+                            <div class="stat-value" id="activePorts">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h5>Plants Connected</h5>
+                            <div class="stat-value" id="activePlants">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h5>Total Capacity</h5>
+                            <div class="stat-value" id="totalCapacity">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario Testing Engine -->
+            <div class="scenario-section card hidden" id="scenarioSection">
+                <div class="card__header">
+                    <h3>🎛️ Real-time Scenario Testing & Cost Impact Analysis</h3>
+                    <div class="scenario-actions">
+                        <select class="form-control" id="scenarioPresets" onchange="loadScenarioPreset()">
+                            <option value="">Custom Scenario</option>
+                            <option value="peak_season">Peak Season Demand</option>
+                            <option value="monsoon">Monsoon Weather Impact</option>
+                            <option value="fuel_crisis">Fuel Cost Crisis</option>
+                            <option value="port_closure">Emergency Port Closure</option>
+                        </select>
+                        <button class="btn btn--outline btn--sm" onclick="resetScenarios()">↺ Reset</button>
+                        <button class="btn btn--warning btn--sm" onclick="saveScenario()">💾 Save Scenario</button>
+                        <button class="btn btn--primary btn--sm" onclick="runScenarioOptimization()" id="scenarioOptimizeBtn">🚀 Re-optimize</button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="scenario-warning" id="scenarioWarning" style="display: none;">
+                        <div class="alert alert--warning">
+                            <div class="alert-icon">⚠️</div>
+                            <div class="alert-content">
+                                <strong>Cost Impact Detected:</strong> Current parameter changes may significantly affect total logistics cost. Consider running re-optimization.
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Progress Indicator -->
-                    <div class="progress-container hidden" id="progressContainer">
-                        <div class="progress-info">
-                            <div class="progress-step" id="progressStep">Initializing...</div>
-                            <div class="progress-description" id="progressDescription">Preparing optimization engine...</div>
+                    <div class="scenario-controls">
+                        <div class="control-group">
+                            <label class="form-label">Port Delay Factor (affects demurrage costs):</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="delayFactor" min="50" max="300" value="100" oninput="updateScenario('delay', this.value)">
+                                <div class="slider-markers">
+                                    <span>50%</span>
+                                    <span>100%</span>
+                                    <span>300%</span>
+                                </div>
+                            </div>
+                            <span class="slider-value" id="delayValue">100%</span>
+                            <small class="help-text">Simulates processing delays due to congestion, weather, or operational issues</small>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                            <div class="progress-percentage" id="progressPercentage">0%</div>
+                        
+                        <div class="control-group">
+                            <label class="form-label">Demand Surge (affects capacity constraints):</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="demandSurge" min="50" max="250" value="100" oninput="updateScenario('demand', this.value)">
+                                <div class="slider-markers">
+                                    <span>50%</span>
+                                    <span>100%</span>
+                                    <span>250%</span>
+                                </div>
+                            </div>
+                            <span class="slider-value" id="demandValue">100%</span>
+                            <small class="help-text">Models increased material demand affecting capacity utilization and costs</small>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="form-label">Fuel Cost Variation (affects ocean freight):</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="fuelCost" min="70" max="200" value="100" oninput="updateScenario('fuel', this.value)">
+                                <div class="slider-markers">
+                                    <span>70%</span>
+                                    <span>100%</span>
+                                    <span>200%</span>
+                                </div>
+                            </div>
+                            <span class="slider-value" id="fuelValue">100%</span>
+                            <small class="help-text">Adjusts transportation costs based on fuel price fluctuations</small>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="form-label">Weather Impact (affects GNN delay predictions):</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="weatherImpact" min="0" max="100" value="20" oninput="updateScenario('weather', this.value)">
+                                <div class="slider-markers">
+                                    <span>0%</span>
+                                    <span>50%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                            <span class="slider-value" id="weatherValue">20%</span>
+                            <small class="help-text">Simulates weather-related delays and operational disruptions</small>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-comparison">
+                        <h4>Scenario Cost Impact Analysis</h4>
+                        <div class="comparison-grid">
+                            <div class="impact-card">
+                                <h5>💰 Total Cost Impact</h5>
+                                <div class="impact-value" id="costImpact">+0%</div>
+                                <div class="impact-details">
+                                    <small>Base Cost: ₹25.0Cr</small>
+                                    <small id="newCost">New Cost: ₹25.0Cr</small>
+                                </div>
+                            </div>
+                            <div class="impact-card">
+                                <h5>🚚 Delivery Impact</h5>
+                                <div class="impact-value" id="deliveryImpact">+0%</div>
+                                <div class="impact-details">
+                                    <small>Base Performance: 95%</small>
+                                    <small id="newDelivery">New Performance: 95%</small>
+                                </div>
+                            </div>
+                            <div class="impact-card">
+                                <h5>⚡ Efficiency Impact</h5>
+                                <div class="impact-value" id="efficiencyImpact">+0%</div>
+                                <div class="impact-details">
+                                    <small>Base Efficiency: 88%</small>
+                                    <small id="newEfficiency">New Efficiency: 88%</small>
+                                </div>
+                            </div>
+                            <div class="impact-card">
+                                <h5>🌍 Environmental Impact</h5>
+                                <div class="impact-value" id="environmentalImpact">+0%</div>
+                                <div class="impact-details">
+                                    <small>Base Emissions: 225t CO₂</small>
+                                    <small id="newEmissions">New Emissions: 225t CO₂</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-history">
+                        <h4>Scenario History</h4>
+                        <div class="history-list" id="scenarioHistory">
+                            <div class="history-item baseline">
+                                <span class="history-name">Baseline Scenario</span>
+                                <span class="history-timestamp">System Default</span>
+                                <span class="history-status">Active</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content Grid -->
-            <div class="content-grid">
-                <!-- Interactive Map -->
-                <div class="map-section card">
-                    <div class="card__header">
-                        <h3>Logistics Network Map</h3>
-                        <div class="map-controls">
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('ports')">Ports</button>
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('plants')">Plants</button>
-                            <button class="btn btn--outline btn--sm" onclick="toggleLayer('routes')">Routes</button>
-                        </div>
-                    </div>
-                    <div class="card__body">
-                        <div id="logistics-map" style="height: 400px; position: relative;"></div>
-                    </div>
-                </div>
-
-                <!-- Performance Charts -->
-                <div class="charts-section card">
-                    <div class="card__header">
-                        <h3>Performance Metrics</h3>
-                        <select class="form-control" style="width: auto;" onchange="updateChartPeriod(this.value)">
-                            <option value="7d">Last 7 Days</option>
-                            <option value="30d">Last 30 Days</option>
-                            <option value="90d">Last 90 Days</option>
-                        </select>
-                    </div>
-                    <div class="card__body">
-                        <div class="chart-container" style="position: relative; height: 300px;">
-                            <canvas id="performanceChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Section -->
-            <div class="results-section hidden" id="resultsSection">
-                <div class="results-header">
-                    <h3>Optimization Results</h3>
-                    <div class="results-timestamp" id="resultsTimestamp"></div>
-                </div>
-                
-                <div class="results-grid">
-                    <!-- Before vs After Comparison -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>Cost Analysis</h4>
-                        </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="costBefore">$2,500,000</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="costAfter">$1,750,000</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="costSavings">-30%</span>
-                                    <span class="savings-label">Savings</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Time Efficiency -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>Delivery Time</h4>
-                        </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="timeBefore">168 hrs</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="timeAfter">142 hrs</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="timeSavings">-15.5%</span>
-                                    <span class="savings-label">Improvement</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Environmental Impact -->
-                    <div class="comparison-card card">
-                        <div class="card__header">
-                            <h4>CO₂ Emissions</h4>
-                        </div>
-                        <div class="card__body">
-                            <div class="comparison-row">
-                                <div class="comparison-item">
-                                    <div class="comparison-label">Before</div>
-                                    <div class="comparison-value" id="emissionsBefore">1,250 tons</div>
-                                </div>
-                                <div class="comparison-arrow">→</div>
-                                <div class="comparison-item">
-                                    <div class="comparison-label">After</div>
-                                    <div class="comparison-value success" id="emissionsAfter">1,025 tons</div>
-                                </div>
-                                <div class="comparison-savings">
-                                    <span class="savings-amount" id="emissionsSavings">-18%</span>
-                                    <span class="savings-label">Reduction</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI Explanation Panel -->
-                <div class="ai-explanation card">
-                    <div class="card__header">
-                        <h4>🤖 AI Explanation (XAI)</h4>
-                    </div>
-                    <div class="card__body">
-                        <div class="explanation-content" id="aiExplanation">
-                            <p><strong>Key Optimizations Applied:</strong></p>
-                            <ul>
-                                <li>🔄 <strong>Route Optimization:</strong> Reduced total distance by 12% through intelligent waypoint selection</li>
-                                <li>⏰ <strong>Scheduling Enhancement:</strong> Minimized port congestion with staggered arrival times</li>
-                                <li>🚢 <strong>Vessel Allocation:</strong> Optimized cargo distribution across 15 vessels for maximum efficiency</li>
-                                <li>🎯 <strong>Demurrage Reduction:</strong> Strategic timing reduced penalties by 75%</li>
-                                <li>🌱 <strong>Emission Control:</strong> Fuel-efficient routing reduced CO₂ emissions by 225 tons</li>
-                            </ul>
-                            <p><strong>Confidence Level:</strong> 94% | <strong>Algorithm:</strong> Hybrid GA-ALNS with Tabu refinement</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- File Upload Section -->
-            <div class="upload-section card">
+            <!-- Algorithm Performance Dashboard -->
+            <div class="algorithm-dashboard card hidden" id="algorithmDashboard">
                 <div class="card__header">
-                    <h3>Data Integration</h3>
+                    <h3>🧬 Real Algorithm Performance & Convergence Analysis</h3>
+                    <div class="dashboard-controls">
+                        <select class="form-control" id="metricView" onchange="changeMetricView()">
+                            <option value="performance">Performance Metrics</option>
+                            <option value="convergence">Convergence Analysis</option>
+                            <option value="comparison">Algorithm Comparison</option>
+                        </select>
+                        <button class="btn btn--outline btn--sm" onclick="exportMetrics()">📊 Export Metrics</button>
+                    </div>
                 </div>
                 <div class="card__body">
-                    <div class="upload-area" onclick="triggerFileUpload()">
-                        <div class="upload-icon">📁</div>
-                        <div class="upload-text">
-                            <p>Click to upload SAP/Excel files or drag & drop</p>
-                            <small>Supports: .xlsx, .xls, .csv, .sap</small>
+                    <div class="algorithm-tabs">
+                        <button class="tab-btn active" onclick="showAlgorithmTab('gnn')">🧠 GNN Predictions</button>
+                        <button class="tab-btn" onclick="showAlgorithmTab('ga')">🧬 Genetic Algorithm</button>
+                        <button class="tab-btn" onclick="showAlgorithmTab('alns')">🔧 ALNS Refinement</button>
+                        <button class="tab-btn" onclick="showAlgorithmTab('tabu')">🎯 Tabu Search</button>
+                        <button class="tab-btn" onclick="showAlgorithmTab('performance')">📈 Performance</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="gnn-tab">
+                        <div class="algorithm-metrics">
+                            <div class="metric-card">
+                                <h5>Prediction Accuracy</h5>
+                                <div class="metric-value" id="gnnAccuracy">0%</div>
+                                <div class="metric-trend" id="gnnAccuracyTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Delay Forecasts</h5>
+                                <div class="metric-value" id="delayForecasts">0</div>
+                                <div class="metric-trend" id="delayForecastsTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Congestion Risk</h5>
+                                <div class="metric-value" id="congestionRisk">Low</div>
+                                <div class="metric-trend" id="congestionRiskTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Network Nodes</h5>
+                                <div class="metric-value" id="networkNodes">0</div>
+                                <div class="metric-trend" id="networkNodesTrend">-</div>
+                            </div>
                         </div>
-                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileUpload(this)">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="gnnChart"></canvas>
+                        </div>
+                        <div class="gnn-details">
+                            <h5>GNN Architecture Details</h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Graph Layers:</span>
+                                    <span class="detail-value">3</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Feature Dimensions:</span>
+                                    <span class="detail-value" id="featureDimensions">0</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Training Iterations:</span>
+                                    <span class="detail-value" id="gnnIterations">0</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Convergence Status:</span>
+                                    <span class="detail-value" id="gnnConvergence">Not Started</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="ga-tab">
+                        <div class="algorithm-metrics">
+                            <div class="metric-card">
+                                <h5>Current Generation</h5>
+                                <div class="metric-value" id="gaGeneration">0</div>
+                                <div class="metric-trend" id="gaGenerationTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Best Fitness (Cost)</h5>
+                                <div class="metric-value" id="gaBestFitness">0</div>
+                                <div class="metric-trend" id="gaBestFitnessTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Population Diversity</h5>
+                                <div class="metric-value" id="gaDiversity">0%</div>
+                                <div class="metric-trend" id="gaDiversityTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Convergence Rate</h5>
+                                <div class="metric-value" id="gaConvergence">0%</div>
+                                <div class="metric-trend" id="gaConvergenceTrend">-</div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="gaChart"></canvas>
+                        </div>
+                        <div class="ga-details">
+                            <h5>Genetic Algorithm Parameters</h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Population Size:</span>
+                                    <span class="detail-value">50</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Crossover Rate:</span>
+                                    <span class="detail-value">80%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Mutation Rate:</span>
+                                    <span class="detail-value">10%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Generations:</span>
+                                    <span class="detail-value">30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="alns-tab">
+                        <div class="algorithm-metrics">
+                            <div class="metric-card">
+                                <h5>ALNS Iterations</h5>
+                                <div class="metric-value" id="alnsIterations">0</div>
+                                <div class="metric-trend" id="alnsIterationsTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Solution Improvement</h5>
+                                <div class="metric-value" id="alnsImprovement">0%</div>
+                                <div class="metric-trend" id="alnsImprovementTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Operator Performance</h5>
+                                <div class="metric-value" id="operatorPerf">Initializing</div>
+                                <div class="metric-trend" id="operatorPerfTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Temperature</h5>
+                                <div class="metric-value" id="alnsTemperature">1000</div>
+                                <div class="metric-trend" id="alnsTemperatureTrend">-</div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="alnsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tabu-tab">
+                        <div class="algorithm-metrics">
+                            <div class="metric-card">
+                                <h5>Tabu Search Steps</h5>
+                                <div class="metric-value" id="tabuSteps">0</div>
+                                <div class="metric-trend" id="tabuStepsTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Tabu List Size</h5>
+                                <div class="metric-value" id="tabuListSize">0</div>
+                                <div class="metric-trend" id="tabuListSizeTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Aspiration Hits</h5>
+                                <div class="metric-value" id="aspirationHits">0</div>
+                                <div class="metric-trend" id="aspirationHitsTrend">-</div>
+                            </div>
+                            <div class="metric-card">
+                                <h5>Best Solution Cost</h5>
+                                <div class="metric-value" id="tabuBestValue">0</div>
+                                <div class="metric-trend" id="tabuBestValueTrend">-</div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="tabuChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="performance-tab">
+                        <div class="performance-overview">
+                            <h5>Algorithm Performance Comparison</h5>
+                            <div class="performance-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Algorithm</th>
+                                            <th>Execution Time</th>
+                                            <th>Solution Quality</th>
+                                            <th>Convergence</th>
+                                            <th>Memory Usage</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>🧠 GNN</td>
+                                            <td id="gnnTime">-</td>
+                                            <td id="gnnQuality">-</td>
+                                            <td id="gnnConvergenceStatus">-</td>
+                                            <td id="gnnMemory">-</td>
+                                            <td><span class="status status--info" id="gnnStatusTable">Standby</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>🧬 GA</td>
+                                            <td id="gaTime">-</td>
+                                            <td id="gaQuality">-</td>
+                                            <td id="gaConvergenceStatus">-</td>
+                                            <td id="gaMemory">-</td>
+                                            <td><span class="status status--info" id="gaStatusTab">Ready</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>🔧 ALNS</td>
+                                            <td id="alnsTime">-</td>
+                                            <td id="alnsQuality">-</td>
+                                            <td id="alnsConvergenceStatus">-</td>
+                                            <td id="alnsMemory">-</td>
+                                            <td><span class="status status--info" id="alnsStatusTab">Ready</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>🎯 Tabu</td>
+                                            <td id="tabuTime">-</td>
+                                            <td id="tabuQuality">-</td>
+                                            <td id="tabuConvergenceStatus">-</td>
+                                            <td id="tabuMemory">-</td>
+                                            <td><span class="status status--info" id="tabuStatusTab">Ready</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-           
+            <!-- Optimization Results & Real Cost Analysis -->
+            <div class="results-section card hidden" id="resultsSection">
+                <div class="card__header">
+                    <h3>🎯 Real Cost-Optimal Logistics Schedule & Results Analysis</h3>
+                    <div class="results-actions">
+                        <button class="btn btn--outline btn--sm" onclick="showAuditTrail()">📋 Full Audit Trail</button>
+                        <button class="btn btn--outline btn--sm" onclick="generateComplianceReport()">📊 Compliance Report</button>
+                        <button class="btn btn--outline btn--sm" onclick="downloadDetailedResults()">📄 Detailed Export</button>
+                        <button class="btn btn--primary btn--sm" onclick="scheduleOptimization()">⏰ Schedule Re-run</button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="results-overview">
+                        <div class="overview-stats">
+                            <div class="overview-item">
+                                <span class="overview-label">Optimization Time:</span>
+                                <span class="overview-value" id="optimizationTime">0ms</span>
+                            </div>
+                            <div class="overview-item">
+                                <span class="overview-label">Confidence Level:</span>
+                                <span class="overview-value" id="confidenceLevel">0%</span>
+                            </div>
+                            <div class="overview-item">
+                                <span class="overview-label">Solutions Evaluated:</span>
+                                <span class="overview-value" id="solutionsEvaluated">0</span>
+                            </div>
+                            <div class="overview-item">
+                                <span class="overview-label">Constraint Violations:</span>
+                                <span class="overview-value" id="constraintViolations">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Real Cost-Optimal Results Table will be inserted here by JavaScript -->
+                    
+                    <div class="results-summary">
+                        <div class="summary-card cost-optimization">
+                            <div class="summary-header">
+                                <h5>💰 Total Cost Optimization</h5>
+                                <button class="btn btn--sm btn--outline" onclick="explainCostOptimization()">Explain AI</button>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value success" id="totalCostSavings">₹0Cr</div>
+                                <div class="summary-change" id="costPercentage">0%</div>
+                                <div class="summary-breakdown">
+                                    <div class="breakdown-item">
+                                        <span>Ocean Freight:</span>
+                                        <span id="oceanFreightSaving">₹0Cr</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Port Handling:</span>
+                                        <span id="handlingSaving">₹0Cr</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Rail Transport:</span>
+                                        <span id="railSaving">₹0Cr</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Demurrage Saved:</span>
+                                        <span id="demurrageSaving">₹0Cr</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card delivery-performance">
+                            <div class="summary-header">
+                                <h5>🚚 Delivery Performance</h5>
+                                <button class="btn btn--sm btn--outline" onclick="explainDeliveryPerformance()">Explain AI</button>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value success" id="deliveryPerformance">0%</div>
+                                <div class="summary-change" id="deliveryImprovement">+0%</div>
+                                <div class="summary-breakdown">
+                                    <div class="breakdown-item">
+                                        <span>On-time Deliveries:</span>
+                                        <span id="onTimeDeliveries">0/0</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Average Delay:</span>
+                                        <span id="averageDelay">0 days</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>GNN Accuracy:</span>
+                                        <span id="reliabilityScore">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card environmental-impact">
+                            <div class="summary-header">
+                                <h5>🌍 Environmental Impact</h5>
+                                <button class="btn btn--sm btn--outline" onclick="explainEnvironmentalImpact()">Explain AI</button>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value success" id="emissionReduction">0 tons</div>
+                                <div class="summary-change" id="emissionPercentage">-0%</div>
+                                <div class="summary-breakdown">
+                                    <div class="breakdown-item">
+                                        <span>CO₂ Reduced:</span>
+                                        <span id="co2Reduction">0 tons</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Fuel Saved:</span>
+                                        <span id="fuelSaved">0 liters</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Route Efficiency:</span>
+                                        <span id="routeEfficiency">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card operational-efficiency">
+                            <div class="summary-header">
+                                <h5>⚡ Operational Efficiency</h5>
+                                <button class="btn btn--sm btn--outline" onclick="explainOperationalEfficiency()">Explain AI</button>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value success" id="scheduleEfficiency">0%</div>
+                                <div class="summary-change" id="efficiencyImprovement">+0%</div>
+                                <div class="summary-breakdown">
+                                    <div class="breakdown-item">
+                                        <span>Capacity Utilization:</span>
+                                        <span id="capacityUtilization">0%</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Port Throughput:</span>
+                                        <span id="portThroughput">0 tons/day</span>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span>Algorithm Performance:</span>
+                                        <span id="resourceOptimization">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="xai-section">
+                        <div class="xai-tabs">
+                            <button class="xai-tab-btn active" onclick="showXAITab('overview')">🤖 AI Decision Overview</button>
+                            <button class="xai-tab-btn" onclick="showXAITab('decisions')">🧠 Decision Tree</button>
+                            <button class="xai-tab-btn" onclick="showXAITab('reasoning')">💡 Detailed Reasoning</button>
+                            <button class="xai-tab-btn" onclick="showXAITab('alternatives')">🔄 Alternative Solutions</button>
+                        </div>
+                        
+                        <div class="xai-content active" id="overview-xai">
+                            <div class="xai-explanation">
+                                <h4>🤖 AI Optimization Decision Summary</h4>
+                                <div class="explanation-content" id="aiExplanation">
+                                    <div class="explanation-loading">
+                                        <div class="loading-spinner"></div>
+                                        <p>Analyzing real optimization decisions and generating explanations...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="xai-content" id="decisions-xai">
+                            <div class="decision-tree" id="decisionTree">
+                                <h4>🧠 Interactive Decision Tree</h4>
+                                <div class="tree-container">
+                                    <div class="tree-note">Click any vessel or route on the optimization table for detailed decision reasoning</div>
+                                    <div class="decision-nodes" id="decisionNodes"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="xai-content" id="reasoning-xai">
+                            <div class="detailed-reasoning" id="detailedReasoning">
+                                <h4>💡 Detailed AI Reasoning</h4>
+                                <div class="reasoning-sections">
+                                    <div class="reasoning-section">
+                                        <h5>🎯 Cost Function Analysis</h5>
+                                        <div class="reasoning-content" id="objectiveAnalysis">Real cost optimization analysis will be generated after optimization completion.</div>
+                                    </div>
+                                    <div class="reasoning-section">
+                                        <h5>🔗 Constraint Satisfaction</h5>
+                                        <div class="reasoning-content" id="constraintAnalysis">Constraint analysis will be generated after optimization completion.</div>
+                                    </div>
+                                    <div class="reasoning-section">
+                                        <h5>🏆 Solution Quality Assessment</h5>
+                                        <div class="reasoning-content" id="qualityAnalysis">Quality assessment will be generated after optimization completion.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="xai-content" id="alternatives-xai">
+                            <div class="alternative-solutions" id="alternativeSolutions">
+                                <h4>🔄 Alternative Solution Analysis</h4>
+                                <div class="alternatives-list">
+                                    <div class="alternatives-note">Alternative cost-optimal solutions will be available after optimization completion.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Government Compliance & Audit Trail -->
+            <div class="compliance-section card hidden" id="complianceSection">
+                <div class="card__header">
+                    <h3>📋 Government Compliance & Optimization Audit Trail</h3>
+                    <div class="compliance-actions">
+                        <select class="form-control" id="complianceStandard">
+                            <option value="all">All Standards</option>
+                            <option value="nlp2022">NLP 2022 Compliance</option>
+                            <option value="sdg">UN SDG Alignment</option>
+                            <option value="bs6">BS-VI Environmental</option>
+                            <option value="data_privacy">Data Privacy (GDPR/CCPA)</option>
+                        </select>
+                        <button class="btn btn--outline btn--sm" onclick="generateComplianceReport()">📊 Generate Report</button>
+                        <button class="btn btn--outline btn--sm" onclick="exportAuditTrail()">📄 Export Audit</button>
+                        <button class="btn btn--primary btn--sm" onclick="scheduleComplianceCheck()">⏰ Schedule Check</button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="compliance-overview">
+                        <div class="compliance-score">
+                            <div class="score-circle">
+                                <div class="score-value" id="overallComplianceScore">100%</div>
+                                <div class="score-label">Overall Compliance</div>
+                            </div>
+                        </div>
+                        <div class="compliance-standards">
+                            <div class="standard-item">
+                                <span class="standard-name">🚛 NLP 2022 (National Logistics Policy)</span>
+                                <span class="standard-score status status--success" id="nlpCompliance">100%</span>
+                            </div>
+                            <div class="standard-item">
+                                <span class="standard-name">🌍 UN SDG (Sustainable Development Goals)</span>
+                                <span class="standard-score status status--success" id="sdgCompliance">100%</span>
+                            </div>
+                            <div class="standard-item">
+                                <span class="standard-name">🌱 BS-VI Environmental Norms</span>
+                                <span class="standard-score status status--success" id="bs6Compliance">100%</span>
+                            </div>
+                            <div class="standard-item">
+                                <span class="standard-name">🔐 Data Privacy & Security</span>
+                                <span class="standard-score status status--success" id="privacyCompliance">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="audit-trail-preview">
+                        <h4>📝 Live Algorithm Execution Audit Trail</h4>
+                        <div class="audit-controls">
+                            <select class="form-control" id="auditFilter">
+                                <option value="all">All Activities</option>
+                                <option value="upload">Data Upload</option>
+                                <option value="validation">Validation</option>
+                                <option value="gnn">GNN Processing</option>
+                                <option value="ga">Genetic Algorithm</option>
+                                <option value="alns">ALNS Optimization</option>
+                                <option value="tabu">Tabu Search</option>
+                                <option value="results">Results</option>
+                                <option value="export">Export</option>
+                            </select>
+                            <button class="btn btn--outline btn--sm" onclick="clearAuditTrail()">🗑️ Clear</button>
+                        </div>
+                        <div class="audit-entries" id="auditEntries">
+                            <div class="audit-entry system">
+                                <span class="audit-timestamp">[System Start]</span>
+                                <span class="audit-category">SYSTEM</span>
+                                <span class="audit-message">UrbanFlow2 Real Optimization System Initialized</span>
+                                <span class="audit-user">System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modals -->
+            
+            <!-- Audit Trail Modal -->
+            <div class="modal hidden" id="auditModal">
+                <div class="modal-overlay" onclick="closeModal('auditModal')"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📋 Complete System Audit Trail</h3>
+                        <button class="modal-close" onclick="closeModal('auditModal')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="audit-filters">
+                            <select class="form-control" id="modalAuditFilter" onchange="filterAuditTrail()">
+                                <option value="all">All Activities</option>
+                                <option value="upload">Data Upload</option>
+                                <option value="validation">Validation</option>
+                                <option value="gnn">GNN Processing</option>
+                                <option value="ga">Genetic Algorithm</option>
+                                <option value="alns">ALNS Optimization</option>
+                                <option value="tabu">Tabu Search</option>
+                                <option value="results">Results Generation</option>
+                                <option value="export">Export Activities</option>
+                            </select>
+                            <input type="date" class="form-control" id="auditDateFilter" onchange="filterAuditTrail()">
+                            <button class="btn btn--outline btn--sm" onclick="downloadAuditTrail()">💾 Download</button>
+                        </div>
+                        <div class="audit-content" id="auditContent">
+                            <div class="audit-loading">Loading complete audit trail...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- XAI Details Modal -->
+            <div class="modal hidden" id="xaiModal">
+                <div class="modal-overlay" onclick="closeModal('xaiModal')"></div>
+                <div class="modal-content large">
+                    <div class="modal-header">
+                        <h3 id="xaiModalTitle">🤖 AI Decision Explanation</h3>
+                        <button class="modal-close" onclick="closeModal('xaiModal')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="xai-modal-content" id="xaiModalContent">
+                            <div class="xai-loading">
+                                <div class="loading-spinner"></div>
+                                <p>Generating detailed AI explanation...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </main>
 
-    
+    <!-- Global Notifications -->
+    <div class="notification-container">
+        <div class="notification hidden" id="notification">
+            <div class="notification-icon" id="notificationIcon">ℹ️</div>
+            <div class="notification-content">
+                <div class="notification-title" id="notificationTitle">System Notification</div>
+                <div class="notification-message" id="notificationMessage"></div>
+            </div>
+            <div class="notification-actions">
+                <button class="notification-action" id="notificationAction" style="display: none;"></button>
+                <button class="notification-close" onclick="hideNotification()">&times;</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Success Notification -->
-    <div class="notification hidden" id="notification">
-        <div class="notification-content">
-            <div class="notification-icon">✅</div>
-            <div class="notification-text"></div>
+    <!-- Performance Monitor (Bottom Right) -->
+    <div class="performance-monitor" id="performanceMonitor">
+        <div class="perf-header">System Performance</div>
+        <div class="perf-metrics">
+            <div class="perf-item">
+                <span class="perf-label">CPU:</span>
+                <span class="perf-value" id="perfCpu">0%</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Memory:</span>
+                <span class="perf-value" id="perfMemory">0MB</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Processing:</span>
+                <span class="perf-value" id="perfProcessing">Idle</span>
+            </div>
         </div>
     </div>
 
