@@ -2247,4 +2247,14 @@ body, .govt-dashboard {
     font-size: 0.85rem;
     opacity: 0.8; /* Make it slightly less prominent */
     margin-top: 4px; /* Add a little space between the two lines */
+}/* Change text color in the Dataset Upload header to white */
+.upload-section .card__header h3,
+.upload-section .status-text,
+.upload-section .progress-text {
+    color: #FFFFFF;
+}
+
+/* Optional: Make the validation circle's border white for better contrast */
+.upload-section .validation-circle {
+    border-color: #FFFFFF;
 }
