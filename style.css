@@ -2196,4 +2196,55 @@ body, .govt-dashboard {
 .validation-results.success {
     color: #FFFFFF; /* Make the text and checkmark icon white */
     font-weight: 600; /* Make the text slightly bolder to stand out */
+}/* === Language Selector Styles === */
+.language-selector {
+    position: relative; /* This is required for positioning the dropdown */
+    display: inline-block;
+}
+
+.language-menu {
+    position: absolute;
+    top: 100%; /* Position it right below the button */
+    left: 0;
+    z-index: 1001; /* Ensure it appears above other elements */
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    min-width: 160px;
+    border: 1px solid #ddd;
+    overflow: hidden; 
+}
+
+.language-menu.hidden {
+    display: none;
+}
+
+.language-menu a {
+    color: #333; /* Dark text for readability on white background */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: 500;
+    text-align: left;
+}
+
+.language-menu a:hover {
+    background-color: #f1f1f1;
+}/* === Professional Bilingual Notification Text Styles === */
+.bilingual-message p {
+    margin: 0; /* Remove default paragraph spacing */
+    line-height: 1.4;
+}
+
+/* Style for the primary Hindi message */
+.lang-hi {
+    font-size: 0.95rem; /* Slightly larger */
+    font-weight: 500;
+}
+
+/* Style for the secondary English translation */
+.lang-en {
+    font-size: 0.85rem;
+    opacity: 0.8; /* Make it slightly less prominent */
+    margin-top: 4px; /* Add a little space between the two lines */
 }

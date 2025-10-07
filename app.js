@@ -1177,22 +1177,29 @@ class UrbanFlow2CompleteSystem {
         }
     }
     
-    showNotification(title, message, type = 'info', icon = 'ℹ️') {
-        const notification = document.getElementById('notification');
-        const titleEl = document.getElementById('notificationTitle');
-        const messageEl = document.getElementById('notificationMessage');
-        const iconEl = document.getElementById('notificationIcon');
-        
-        titleEl.textContent = title;
-        messageEl.textContent = message;
-        iconEl.textContent = icon;
-        
-        notification.className = `notification show ${type}`;
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 5000);
-    }
+    // NEW FUNCTION - This uses .innerHTML, which correctly renders HTML tags
+showNotification(title, message, type = 'info', icon = 'ℹ️') {
+    const notification = document.getElementById('notification');
+    
+    // Create the structured HTML for the notification
+    const notificationHTML = `
+        <div class="notification-icon">${icon}</div>
+        <div class="notification-content">
+            <div class="notification-title">${title}</div>
+            <div class="notification-message">${message}</div>
+        </div>
+        <button class="notification-close" onclick="hideNotification()">&times;</button>
+    `;
+
+    // Set the content using .innerHTML
+    notification.innerHTML = notificationHTML;
+    notification.className = `notification show ${type}`;
+    
+    // Automatically hide the notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 5000);
+}
     
     closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
@@ -1256,26 +1263,32 @@ console.log('✅ Government of India styling and aesthetics');
 console.log('✅ Full audit trail, report generation, export functionality');
 console.log('✅ Demo mode with sample Indian port/plant data');
 console.log('✅ All buttons functional - COMPLETE IMPLEMENTATION!');
-// --- Language Selection Logic ---
+// === Language Selection Logic ===
+// === Language Selection Logic (Corrected) ===
 
 // This function shows or hides the language dropdown menu
 function toggleLanguageMenu() {
     document.getElementById('languageMenu').classList.toggle('hidden');
 }
 
-// This function is called when you click on "English" or "Hindi"
+// This function is called when you click on an option in the menu
 function selectLanguage(language) {
     const menu = document.getElementById('languageMenu');
-    menu.classList.add('hidden'); // Hide the menu after selection
+    menu.classList.add('hidden'); // Always hide the menu after a selection is made
 
     if (language === 'hindi') {
-        // Use the existing notification system to show the message
         app.showNotification(
-            'Under Development', 
-            'Hindi language support is not yet available.', 
+            'निर्माणाधीन (Under Development)',
+            `
+                <div class="bilingual-message">
+                    <p class="lang-hi">हिन्दी भाषा का समर्थन अभी उपलब्ध नहीं है।</p>
+                    <p class="lang-en">Hindi language support is not yet available.</p>
+                </div>
+            `,
             'info', 
             '🚧'
         );
+    // CORRECTED: The closing brace "}" was removed from here...
     } else if (language === 'english') {
         app.showNotification(
             'Language Selected',
@@ -1284,14 +1297,17 @@ function selectLanguage(language) {
             '✅'
         );
     }
-}
+} // ...and correctly placed here to close the function.
 
-// This part closes the language menu if you click anywhere else on the page
-window.onclick = function(event) {
-    if (!event.target.matches('.language-selector button')) {
-        const menu = document.getElementById('languageMenu');
-        if (!menu.classList.contains('hidden')) {
-            menu.classList.add('hidden');
+// This closes the language menu if you click anywhere else on the page
+window.addEventListener('click', function(event) {
+    const langMenu = document.getElementById('languageMenu');
+    // Add a check to ensure langMenu exists before proceeding
+    if (langMenu) {
+        const langButton = langMenu.previousElementSibling; 
+
+        if (langButton && !langButton.contains(event.target) && !langMenu.classList.contains('hidden')) {
+            langMenu.classList.add('hidden');
         }
     }
-}
+});
