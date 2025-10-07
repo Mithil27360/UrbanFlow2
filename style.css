@@ -2189,3 +2189,11 @@ body, .govt-dashboard {
 .notification.warning {
     background: linear-gradient(135deg, #FF9933, #FF8C00); /* Saffron/Orange */
 }
+/*
+  This CSS rule targets the green success box (.validation-results.success)
+  and changes the text color inside it to white for high contrast.
+*/
+.validation-results.success {
+    color: #FFFFFF; /* Make the text and checkmark icon white */
+    font-weight: 600; /* Make the text slightly bolder to stand out */
+}
