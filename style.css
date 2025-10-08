@@ -869,7 +869,7 @@ select.form-control {
 
 /* Government Dashboard */
 .govt-dashboard {
-  padding-top: 140px;
+  padding-top: 200px;
   min-height: 100vh;
   background: linear-gradient(to bottom, 
     var(--color-cream-50) 0%, 
@@ -2257,4 +2257,326 @@ body, .govt-dashboard {
 /* Optional: Make the validation circle's border white for better contrast */
 .upload-section .validation-circle {
     border-color: #FFFFFF;
+}/* Changes the color of the large KPI numbers to white */
+.kpi-value {
+    color: #FFFFFF;
+}/*
+  This CSS increases the font size for the text within the
+  "Scenario Cost Impact Analysis" cards for better readability.
+*/
+
+/* Target the label text (e.g., "Total Cost Impact") */
+.impact-content h5 {
+    font-size: 1rem; /* Increases size from 0.875rem */
+}
+
+/* Target the value text (e.g., "+0.0%") */
+.impact-value {
+    font-size: 1.5rem; /* Increases size from 1.25rem */
+}/*
+  This CSS restyles the text for the scenario sliders,
+  making it larger and changing the color to white.
+*/
+
+/* Target the labels (e.g., "Port Delay Factor") */
+.slider-group label {
+    color: #FFFFFF;
+    font-size: 1rem;      /* Increase font size */
+    font-weight: 500;     /* Make it a bit bolder */
+}
+
+/* Target the value display (e.g., "1.0x") */
+.slider-value {
+    color: #333333;       /* Keep text dark for readability on its light background */
+    font-size: 1rem;      /* Increase font size */
+    padding: 6px 12px;  /* Add a bit more padding */
+}/*
+  This CSS increases the font size for the title and buttons
+  in the "Real-time Scenario Testing" section.
+*/
+
+/* Target the main title of the section */
+.scenario-section .card__header h3 {
+    font-size: 1.75rem; /* Increase font size */
+}
+
+/* Target the buttons in that section's header */
+.scenario-section .scenario-controls .btn {
+    font-size: 1rem;      /* Increase button font size */
+    padding: 12px 22px; /* Add more padding to make the button physically larger */
+}.scenario-controls button {
+  background: linear-gradient(180deg, #0047ab, #002e73); /* same blue as Download Templates */
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scenario-controls button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  background: linear-gradient(180deg, #0059d4, #003b99);
+}
+/*
+  This CSS changes the text color of the table headers
+  (e.g., "Vessel ID", "Vessel Name") to white.
+*/
+.schedule-table th {
+    color: #FFFFFF;
+}/*
+  This CSS restyles the buttons in the "Optimized Vessel Schedule"
+  header to have a solid blue background and white text, matching
+  the main header buttons.
+*/
+.results-actions .btn {
+    background: linear-gradient(180deg, #0A1F44, #002e73); /* Deep Navy Blue Gradient */
+    color: #FFFFFF;
+    font-weight: 500;
+    border: 1px solid #FFFFFF;
+    border-radius: 8px;
+    padding: 8px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.results-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(75, 4, 197, 0.25);
+    background: linear-gradient(180deg, #0551f7, #0949b9); /* Lighter navy on hover */
+}/*
+  This single style block makes the buttons in both the "Results"
+  and "Scenario" sections look identical and professional.
+*/
+.results-actions .btn,
+.scenario-controls .btn {
+    background: linear-gradient(180deg, #0A1F44, #002e73); /* Deep Navy Blue Gradient */
+    color: #FFFFFF;
+    font-weight: 500;
+    border: 1px solid #FFFFFF;
+    border-radius: 8px;
+    padding: 8px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.results-actions .btn:hover,
+.scenario-controls .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+    background: linear-gradient(180deg, #1c2e55, #0A1F44); /* Lighter navy on hover */
+}/* Makes the "Optimized Vessel Schedule" title larger */
+.results-section .card__header h3 {
+    font-size: 1.75rem; /* Increase font size */
+}/*
+  This CSS repositions the notification container to the top of the screen,
+  placing the pop-ups near the header buttons.
+*/
+.notification-container {
+    top: 10px; /* Distance from the top of the page */
+    right: 24px;  /* Distance from the right edge */
+    left: auto;   /* Reset the left property */
+    bottom: auto; /* Reset the bottom property */
+    max-width: 400px; /* Optional: Constrain the width */
+}/* === DEMO MODE BANNER STYLES === */
+.demo-banner {
+    position: fixed;
+    top: 15px;
+    left: 0;
+    right: 0;
+    z-index: 1999; /* Lower z-index */
+    background: linear-gradient(135deg, #FF9933, #FF8C00);
+    color: #0A1F44;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* ... other demo banner styles ... */
+
+/* === NOTIFICATION CONTAINER POSITIONING === */
+.notification-container {
+    position: fixed; /* Make sure this is fixed */
+    z-index: 2000; /* HIGHER z-index */
+    top: 65px;
+    right: 10px;
+}/*
+  This makes the demo banner stick to the very top of the page
+  and pushes the main content down when it's active.
+*/
+.demo-banner {
+    position: fixed;
+    top: 0; /* Sticks to the very top */
+    left: 0;
+    right: 0;
+    z-index: 1999;
+    background: linear-gradient(135deg, #FF9933, #FF8C00);
+    color: #0A1F44;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+
+/* NEW RULE: When demo mode is active, push the main header down */
+body.demo-mode-active .govt-header {
+    top: 45px; /* Adjust this value to match your banner's height */
+}/* === FINAL BANNER POSITIONING FIX === */
+
+/* 1. Style for the demo banner itself. It sticks to the top. */
+.demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000; /* Highest z-index */
+    background: linear-gradient(135deg, #FF9933, #FF8C00);
+    color: #0A1F44;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+
+/* 2. When demo mode is ON, add padding to the top of the body. */
+/* This pushes EVERYTHING down by the height of the banner. */
+body.demo-mode-active {
+    padding-top: 45px; /* Adjust this value to match your banner's height */
+}
+
+/* 3. Ensure the fixed header is also pushed down correctly. */
+/* This was missed before. */
+body.demo-mode-active .govt-header {
+    top: 45px; /* This pushes the header down below the banner */
+}/* === FINAL BANNER POSITIONING FIX === */
+
+/* 1. Style for the demo banner itself. It sticks to the top. */
+.demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000; /* Highest z-index */
+    background: linear-gradient(135deg, #FF9933, #FF8C00);
+    color: #0A1F44;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+
+.demo-banner.hidden {
+    display: none;
+}
+
+.btn-exit-demo {
+    background: #0A1F44;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 2. When demo mode is ON, add padding to the top of the body. */
+/* This pushes EVERYTHING down by the height of the banner. */
+body.demo-mode-active {
+    padding-top: 45px; /* Adjust this value to match your banner's height */
+}/*
+  This CSS makes the Demo Mode banner more eye-catching
+  with larger text and a subtle pulsing animation.
+*/
+.demo-banner {
+    padding: 12px 24px; /* Increase padding to make the banner taller */
+    font-size: 1.1rem;    /* Make the font size larger */
+    font-weight: 600;   /* Make the text bolder */
+    animation: pulse-background 2s infinite; /* Add a subtle background pulse */
+}
+
+/* Keyframe animation for the pulse effect */
+@keyframes pulse-background {
+    0% {
+        background-color: #FF9933; /* Saffron */
+    }
+    50% {
+        background-color: #FFC107; /* A brighter gold/yellow */
+    }
+    100% {
+        background-color: #FF9933; /* Saffron */
+    }
+}/*
+  This CSS makes the Demo Mode banner permanently larger and more prominent.
+*/
+.demo-banner {
+    padding: 16px 30px; /* More padding to make the banner much taller */
+    font-size: 1.25rem;  /* Significantly larger font size */
+    font-weight: 700;   /* Bolder text */
+    animation: pulse-background 2.5s infinite; /* Slower, more noticeable pulse */
+}
+
+/* Keyframe animation for the pulse effect */
+@keyframes pulse-background {
+    0% {
+        background-color: #FF9933; /* Saffron */
+    }
+    50% {
+        background-color: #FFC107; /* A brighter gold/yellow */
+    }
+    100% {
+        background-color: #FF9933; /* Saffron */
+    }
+}/*
+  This CSS changes the background of the "AI Algorithm Processing"
+  section to a dark charcoal/black for a consistent dark theme.
+*/
+.processing-section.card {
+    background-color: #1a1a1a; /* Dark Charcoal / Off-black */
+    border-color: #FF8C00;   /* Saffron Orange border to match the theme */
+}/*
+  This CSS restyles the text in the "Run Optimization" workflow step
+  and the "Processing your data..." status text.
+*/
+
+/* Targets "Data is Being Processed. Please Wait..." */
+.workflow-step[data-step="4"] p {
+    font-size: 1rem;      /* Bigger font size */
+    font-weight: 700;     /* Bolder text */
+    color: #0A1F44;       /* Deep Navy Blue */
+}
+
+/* Targets "Processing your data..." */
+#processingStatusText {
+    font-size: 1.25rem;   /* Bigger font size */
+    font-weight: 700;     /* Bolder text */
+    color: #0A1F44;       /* Deep Navy Blue */
+}/*
+  This CSS restyles the text in the "Run Optimization" workflow step
+  and the "Processing your data..." status text.
+*/
+
+/* Targets "Data is Being Processed. Please Wait..." */
+.workflow-step[data-step="4"] p {
+    font-size: 1rem;      /* Bigger font size */
+    font-weight: 700;     /* Bolder text */
+    color: #0A1F44;       /* Deep Navy Blue */
+}
+
+/* Targets "Processing your data..." */
+#processingStatusText {
+    font-size: 1.25rem;   /* Bigger font size */
+    font-weight: 700;     /* Bolder text */
+    color: #0A1F44;       /* Deep Navy Blue */
+}/* Changes the color of the titles in the report generation modal */
+.report-options .option-group h4 {
+    color: #FFFFFF;
 }

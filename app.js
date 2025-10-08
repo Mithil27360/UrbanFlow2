@@ -856,48 +856,46 @@ class UrbanFlow2CompleteSystem {
         this.showNotification('Scenario Saved', `${scenarioName} saved successfully!`, 'success', '💾');
     }
     
-    toggleDemoMode() {
-        this.isDemoMode = !this.isDemoMode;
-        const demoOverlay = document.getElementById('demoOverlay');
-        const demoBtn = document.getElementById('demoBtn');
+    // NEW and CORRECTED toggleDemoMode function
+toggleDemoMode() {
+    this.isDemoMode = !this.isDemoMode;
+    const demoBanner = document.getElementById('demoBanner');
+    const demoBtn = document.getElementById('demoBtn');
+
+    if (this.isDemoMode) {
+        // --- Activate Demo Mode ---
+        document.body.classList.add('demo-mode-active'); // This is the key line to push content down
+        demoBanner.classList.remove('hidden');
+        demoBtn.textContent = '🎮 Exit Demo';
+
+        // ... (rest of the function for activating demo mode) ...
+        // (The code below this point should be your existing logic for loading sample data)
+        this.datasets = { ...this.sampleData };
+        this.validatedCount = this.requiredDatasets.length;
+        this.requiredDatasets.forEach(dataset => {
+            this.validationResults[dataset] = { isValid: true, totalRows: this.sampleData[dataset]?.length || 0 };
+        });
+        this.updateAllDatasetCards();
+        this.updateValidationSummary();
+        this.checkOptimizationReadiness();
+        this.checkMapVisibility();
+        this.addAuditEntry('Demo mode activated', 'Sample data loaded for demonstration');
+        this.showNotification('Demo Mode Active', 'Sample data loaded. You can now run optimization.', 'info', '🎮');
+
+
+    } else {
+        // --- Deactivate Demo Mode ---
+        document.body.classList.remove('demo-mode-active'); // This is the key line to reset content position
+        demoBanner.classList.add('hidden');
+        demoBtn.textContent = '🎮 Demo Mode';
         
-        if (this.isDemoMode) {
-            // Load sample data
-            this.datasets = { ...this.sampleData };
-            this.validatedCount = this.requiredDatasets.length;
-            this.coordinatesFound = this.sampleData.ports.length + this.sampleData.plants.length;
-            
-            // Update validation results
-            this.requiredDatasets.forEach(dataset => {
-                this.validationResults[dataset] = {
-                    isValid: true,
-                    coordinateCount: this.sampleData[dataset]?.length || 0,
-                    totalRows: this.sampleData[dataset]?.length || 0
-                };
-            });
-            
-            // Update UI
-            this.updateAllDatasetCards();
-            this.updateValidationSummary();
-            this.checkOptimizationReadiness();
-            this.checkMapVisibility();
-            
-            demoOverlay.classList.remove('hidden');
-            demoBtn.textContent = '🎮 Exit Demo';
-            
-            this.addAuditEntry('Demo mode activated', 'Sample data loaded for demonstration');
-            this.showNotification('Demo Mode Active', 'Sample data loaded. Try running optimization!', 'info', '🎮');
-            
-        } else {
-            // Clear demo data
-            this.resetSystem();
-            demoOverlay.classList.add('hidden');
-            demoBtn.textContent = '🎮 Demo Mode';
-            
-            this.addAuditEntry('Demo mode deactivated', 'Returned to normal operation mode');
-            this.showNotification('Demo Mode Exited', 'Upload your own data to continue.', 'info', '📁');
-        }
+        // ... (rest of the function for deactivating demo mode) ...
+        // (The code below this point should be your existing logic for resetting the system)
+        this.resetSystem(true); // Assuming resetSystem is modified to accept a boolean
+        this.addAuditEntry('Demo mode deactivated', 'Returned to normal operation mode');
+        this.showNotification('Demo Mode Exited', 'Upload your own data to continue.', 'info', '📁');
     }
+}
     
     updateAllDatasetCards() {
         this.requiredDatasets.forEach(dataset => {
@@ -1081,72 +1079,73 @@ class UrbanFlow2CompleteSystem {
         return csvRows.join('\n');
     }
     
-    resetSystem() {
-        if (!this.isDemoMode && Object.keys(this.datasets).length > 0) {
-            if (!confirm('This will reset all data and results. Continue?')) {
-                return;
-            }
+    // NEW and CORRECTED resetSystem function
+resetSystem(isExitingDemo = false) { // A parameter is added here
+    if (!isExitingDemo && Object.keys(this.datasets).length > 0) {
+        if (!confirm('This will reset all data and results. Continue?')) {
+            return;
         }
-        
-        // Clear all data
-        this.datasets = {};
-        this.validationResults = {};
-        this.optimizationResults = null;
-        this.scenarioResults = null;
-        this.validatedCount = 0;
-        this.totalRecords = 0;
-        this.coordinatesFound = 0;
-        this.isProcessing = false;
-        this.isDemoMode = false;
-        
-        // Reset maps
-        if (this.map) {
-            this.map.remove();
-            this.map = null;
-        }
-        
-        // Reset UI
-        document.querySelectorAll('.dataset-card').forEach(card => {
-            card.classList.remove('uploaded', 'error', 'validating');
-        });
-        
-        document.querySelectorAll('.dataset-status').forEach(status => {
-            status.className = 'dataset-status';
-            status.textContent = 'Not Uploaded';
-        });
-        
-        document.querySelectorAll('.validation-results').forEach(result => {
-            result.classList.add('hidden');
-            result.innerHTML = '';
-        });
-        
-        document.querySelectorAll('.file-input').forEach(input => {
-            input.value = '';
-        });
-        
-        // Reset progress
-        document.querySelectorAll('.progress-fill').forEach(bar => {
-            bar.style.width = '0%';
-        });
-        
-        document.querySelectorAll('.algorithm-phase').forEach(phase => {
-            phase.classList.remove('active', 'completed');
-        });
-        
-        document.getElementById('validationProgress').classList.remove('complete');
-        document.getElementById('optimizeBtn').disabled = true;
-        document.getElementById('exportBtn').disabled = true;
-        document.getElementById('demoOverlay').classList.add('hidden');
-        document.getElementById('demoBtn').textContent = '🎮 Demo Mode';
-        
-        this.updateWorkflowProgress(1);
-        this.hideDataDependentSections();
-        this.updateValidationSummary();
-        this.resetScenarios();
-        
+    }
+
+    // Clear all data
+    this.datasets = {};
+    this.validationResults = {};
+    this.optimizationResults = null;
+    this.scenarioResults = null;
+    this.validatedCount = 0;
+    this.totalRecords = 0;
+    this.coordinatesFound = 0;
+    // this.isDemoMode is handled by toggleDemoMode, no need to set it to false here
+
+    // Reset maps
+    if (this.map) {
+        this.map.remove();
+        this.map = null;
+    }
+
+    // Reset UI
+    document.querySelectorAll('.dataset-card').forEach(card => {
+        card.classList.remove('uploaded', 'error', 'validating');
+    });
+
+    document.querySelectorAll('.dataset-status').forEach(status => {
+        status.className = 'dataset-status';
+        status.textContent = 'Not Uploaded';
+    });
+
+    document.querySelectorAll('.validation-results').forEach(result => {
+        result.classList.add('hidden');
+        result.innerHTML = '';
+    });
+
+    document.querySelectorAll('.file-input').forEach(input => {
+        input.value = '';
+    });
+
+    // Reset progress
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+        bar.style.width = '0%';
+    });
+
+    document.querySelectorAll('.algorithm-phase').forEach(phase => {
+        phase.classList.remove('active', 'completed');
+    });
+
+    document.getElementById('validationProgress').classList.remove('complete');
+    document.getElementById('optimizeBtn').disabled = true;
+    document.getElementById('exportBtn').disabled = true;
+    
+    this.updateWorkflowProgress(1);
+    this.hideDataDependentSections();
+    this.updateValidationSummary();
+    this.resetScenarios();
+
+    // Only show notification if it's a manual reset, not when exiting demo
+    if (!isExitingDemo) {
         this.addAuditEntry('System reset', 'All data and results cleared - system returned to initial state');
         this.showNotification('System Reset', 'All data cleared. Upload datasets or try demo mode.', 'info', '🔄');
     }
+}
     
     updateWorkflowProgress(step) {
         document.querySelectorAll('.workflow-step').forEach((stepEl, index) => {
