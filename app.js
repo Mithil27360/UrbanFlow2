@@ -1,6 +1,3 @@
-// UrbanFlow2 - Complete Government of India AI Logistics Optimization Platform
-// ALL FEATURES IMPLEMENTED EXACTLY AS REQUESTED
-
 class UrbanFlow2CompleteSystem {
     constructor() {
         this.datasets = {};
@@ -18,7 +15,6 @@ class UrbanFlow2CompleteSystem {
         this.totalRecords = 0;
         this.coordinatesFound = 0;
         
-        // Schema definitions with exact requirements
         this.schemas = {
             ports: ['port_id', 'port_name', 'latitude', 'longitude', 'max_capacity_tons', 'handling_cost', 'storage_cost'],
             plants: ['plant_id', 'plant_name', 'latitude', 'longitude', 'max_capacity_tons', 'required_material'],
@@ -28,7 +24,6 @@ class UrbanFlow2CompleteSystem {
             delays: ['port_id', 'historical_eta', 'actual_arrival', 'weather', 'congestion_level', 'delay_hours']
         };
         
-        // Sample data for demo mode with Indian locations
         this.sampleData = {
             ports: [
                 { port_id: 'PARADIP', port_name: 'Paradip Port', latitude: 20.26, longitude: 86.62, max_capacity_tons: 150000, handling_cost: 8, storage_cost: 3 },
@@ -98,7 +93,6 @@ class UrbanFlow2CompleteSystem {
     }
     
     setupFileUploadHandlers() {
-        // File input handlers
         document.querySelectorAll('.file-input').forEach(input => {
             input.addEventListener('change', (e) => {
                 const dataset = e.target.getAttribute('data-dataset');
@@ -111,7 +105,6 @@ class UrbanFlow2CompleteSystem {
             });
         });
         
-        // Drag and drop handlers
         document.querySelectorAll('.dataset-upload').forEach(uploadArea => {
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -151,7 +144,6 @@ class UrbanFlow2CompleteSystem {
         const statusElement = document.getElementById(`${dataset}-status`);
         const validationElement = document.getElementById(`${dataset}-validation`);
         
-        // Show processing state
         card.classList.remove('uploaded', 'error');
         card.classList.add('validating');
         statusElement.textContent = 'Validating...';
@@ -160,7 +152,6 @@ class UrbanFlow2CompleteSystem {
         this.addAuditEntry(`File upload started`, `${dataset}.csv upload initiated`);
         
         try {
-            // Parse CSV file
             const csvText = await this.readFileAsText(file);
             const parseResult = Papa.parse(csvText, {
                 header: true,
@@ -176,7 +167,6 @@ class UrbanFlow2CompleteSystem {
             const validation = this.validateDataset(dataset, data);
             
             if (validation.isValid) {
-                // Success - store data and update UI
                 this.datasets[dataset] = data;
                 this.validationResults[dataset] = validation;
                 
@@ -197,7 +187,6 @@ class UrbanFlow2CompleteSystem {
                 this.addAuditEntry(`Dataset validated`, `${dataset}.csv: ${data.length} records validated successfully`);
                 this.showNotification('Dataset Validated', `${dataset}.csv uploaded and validated successfully!`, 'success', '✅');
                 
-                // Check if we can show map (need ports + plants with coordinates)
                 this.checkMapVisibility();
                 
             } else {
@@ -205,7 +194,6 @@ class UrbanFlow2CompleteSystem {
             }
             
         } catch (error) {
-            // Handle errors
             card.classList.remove('validating', 'uploaded');
             card.classList.add('error');
             statusElement.className = 'dataset-status error';
@@ -254,14 +242,12 @@ class UrbanFlow2CompleteSystem {
         const requiredColumns = this.schemas[datasetName];
         const dataColumns = Object.keys(data[0]);
         
-        // Check required columns
         const missingColumns = requiredColumns.filter(col => !dataColumns.includes(col));
         if (missingColumns.length > 0) {
             validation.errors.push(`Missing required columns: ${missingColumns.join(', ')}`);
             return validation;
         }
         
-        // Special validation for coordinate datasets
         if (datasetName === 'ports' || datasetName === 'plants') {
             let validCoordinates = 0;
             data.forEach((row, index) => {
@@ -284,7 +270,6 @@ class UrbanFlow2CompleteSystem {
             }
         }
         
-        // Basic data quality checks
         let filledCells = 0;
         const totalCells = data.length * requiredColumns.length;
         
@@ -324,20 +309,16 @@ class UrbanFlow2CompleteSystem {
             this.map.remove();
         }
         
-        // Initialize map centered on India
         this.map = L.map('mapContainer').setView([20.0, 77.0], 5);
         
-        // Add map tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(this.map);
         
-        // Add ports with specific ⚓ icons
         if (this.datasets.ports) {
             this.addPortsToMap();
         }
         
-        // Add plants with specific 🏭 icons
         if (this.datasets.plants) {
             this.addPlantsToMap();
         }
@@ -422,7 +403,6 @@ class UrbanFlow2CompleteSystem {
         
         this.totalRecords = Object.values(this.datasets).reduce((sum, data) => sum + data.length, 0);
         
-        // Update validation circle
         const progressCircle = document.getElementById('validationProgress');
         const progressText = document.getElementById('progressText');
         progressText.textContent = `${validFiles}/${totalFiles}`;
@@ -432,11 +412,9 @@ class UrbanFlow2CompleteSystem {
         }
         
         if (uploadedFiles > 0) {
-            // Show validation summary, hide empty state
             document.getElementById('validationSummaryEmpty').classList.add('hidden');
             document.getElementById('validationSummary').classList.remove('hidden');
             
-            // Update summary stats
             document.getElementById('filesUploaded').textContent = `${uploadedFiles}/${totalFiles}`;
             document.getElementById('validationStatus').textContent = 
                 validFiles === totalFiles ? 'All Valid' : `${validFiles} Valid, ${uploadedFiles - validFiles} Invalid`;
@@ -447,7 +425,6 @@ class UrbanFlow2CompleteSystem {
             document.getElementById('validationSummary').classList.add('hidden');
         }
         
-        // Update status text
         const statusText = document.getElementById('uploadStatus');
         if (validFiles === totalFiles) {
             statusText.textContent = 'All datasets validated. Ready for optimization.';
@@ -486,30 +463,22 @@ class UrbanFlow2CompleteSystem {
         this.isProcessing = true;
         this.addAuditEntry('Optimization started', 'AI algorithm processing initiated');
         
-        // Show processing monitor
         document.getElementById('processingSection').classList.remove('hidden');
         document.getElementById('emptyResults').classList.add('hidden');
         
         try {
-            // Phase 1: 🧠 GNN Predictions
             await this.runGNNPhase();
             
-            // Phase 2: 🧬 Genetic Algorithm
             await this.runGAPhase();
             
-            // Phase 3: 🔧 ALNS Refinement  
             await this.runALNSPhase();
             
-            // Phase 4: 🎯 Tabu Search
             await this.runTabuPhase();
             
-            // Phase 5: 📈 Performance Analysis
             await this.runPerformancePhase();
             
-            // Generate optimization results
             await this.generateOptimizationResults();
             
-            // Show results and enable scenario testing
             this.showOptimizationResults();
             this.enableScenarioTesting();
             this.updateWorkflowProgress(5);
@@ -534,14 +503,12 @@ class UrbanFlow2CompleteSystem {
         phase.classList.add('active');
         this.addAuditEntry('GNN phase started', 'Graph Neural Network analyzing delay patterns');
         
-        // Process delay data with GNN simulation
         const delays = this.datasets.delays || [];
         let totalDelay = 0;
         
         for (let i = 0; i <= 100; i += 2) {
             progress.style.width = `${i}%`;
             
-            // Simulate GNN processing on delay data
             if (i < delays.length * 2) {
                 const delayIndex = Math.floor(i / 2);
                 if (delays[delayIndex]) {
@@ -556,7 +523,7 @@ class UrbanFlow2CompleteSystem {
             averageDelay: delays.length > 0 ? totalDelay / delays.length : 12.5,
             delayPredictions: delays.map(d => ({
                 port_id: d.port_id,
-                predictedDelay: (parseFloat(d.delay_hours) || 0) * 0.85, // GNN reduces predicted delays
+                predictedDelay: (parseFloat(d.delay_hours) || 0) * 0.85,
                 confidence: 0.92
             }))
         };
@@ -578,7 +545,6 @@ class UrbanFlow2CompleteSystem {
             await this.sleep(40);
         }
         
-        // Generate optimal vessel assignments
         const vessels = this.datasets.vessels || [];
         const ports = this.datasets.ports || [];
         
@@ -660,7 +626,6 @@ class UrbanFlow2CompleteSystem {
         const schedule = [];
         let totalCost = 0;
         
-        // Generate complete optimized schedule with all requested columns
         vessels.forEach((vessel, index) => {
             const assignedPort = ports[index % ports.length];
             const targetPlant = plants[index % plants.length];
@@ -677,11 +642,9 @@ class UrbanFlow2CompleteSystem {
                 const storageCost = (parseFloat(assignedPort.storage_cost) || 3) * capacity;
                 const totalVesselCost = handlingCost + railCost + demurrageCost + storageCost;
                 
-                // Get GNN predicted delay
                 const portDelay = this.gnnResults?.delayPredictions?.find(p => p.port_id === assignedPort.port_id);
                 const predictedDelay = portDelay ? portDelay.predictedDelay.toFixed(1) : (Math.random() * 15 + 5).toFixed(1);
                 
-                // Determine feasibility
                 let feasibility = 'High';
                 if (capacity > assignedPort.max_capacity_tons * 0.8) feasibility = 'Medium';
                 if (capacity > assignedPort.max_capacity_tons) feasibility = 'Low';
@@ -703,7 +666,6 @@ class UrbanFlow2CompleteSystem {
             }
         });
         
-        // Calculate KPIs
         const totalCapacity = ports.reduce((sum, port) => sum + (parseFloat(port.max_capacity_tons) || 0), 0);
         const usedCapacity = schedule.reduce((sum, item) => sum + item.quantity, 0);
         const utilizationRate = totalCapacity > 0 ? (usedCapacity / totalCapacity) * 100 : 0;
@@ -784,13 +746,11 @@ class UrbanFlow2CompleteSystem {
         const fuelCostVariation = parseFloat(document.getElementById('fuelCostVariation').value);
         const weatherImpact = parseFloat(document.getElementById('weatherImpact').value);
         
-        // Update slider value displays
         document.getElementById('portDelayValue').textContent = `${portDelayFactor.toFixed(1)}x`;
         document.getElementById('demandSurgeValue').textContent = `${demandSurge.toFixed(1)}x`;
         document.getElementById('fuelCostValue').textContent = `${fuelCostVariation.toFixed(1)}x`;
         document.getElementById('weatherImpactValue').textContent = `${weatherImpact.toFixed(1)}x`;
         
-        // Calculate scenario impacts
         const baseCost = this.optimizationResults.kpis.totalCost;
         const baseDelay = this.optimizationResults.kpis.averageDelay;
         
@@ -799,7 +759,6 @@ class UrbanFlow2CompleteSystem {
         const efficiencyImpact = 100 - Math.abs(costImpact) * 0.3;
         const environmentalImpact = (fuelCostVariation - 1) * 15 + (demandSurge - 1) * 10;
         
-        // Update impact displays
         document.getElementById('totalCostImpact').textContent = `${costImpact > 0 ? '+' : ''}${costImpact.toFixed(1)}%`;
         document.getElementById('totalCostImpact').className = `impact-value ${costImpact > 0 ? 'negative' : costImpact < -2 ? 'positive' : ''}`;
         
@@ -843,7 +802,6 @@ class UrbanFlow2CompleteSystem {
             ...this.scenarioResults
         };
         
-        // Save to localStorage (if available) or download as file
         const blob = new Blob([JSON.stringify(scenarioData, null, 2)], { type: 'application/json' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -856,20 +814,16 @@ class UrbanFlow2CompleteSystem {
         this.showNotification('Scenario Saved', `${scenarioName} saved successfully!`, 'success', '💾');
     }
     
-    // NEW and CORRECTED toggleDemoMode function
 toggleDemoMode() {
     this.isDemoMode = !this.isDemoMode;
     const demoBanner = document.getElementById('demoBanner');
     const demoBtn = document.getElementById('demoBtn');
 
     if (this.isDemoMode) {
-        // --- Activate Demo Mode ---
-        document.body.classList.add('demo-mode-active'); // This is the key line to push content down
+        document.body.classList.add('demo-mode-active');
         demoBanner.classList.remove('hidden');
         demoBtn.textContent = '🎮 Exit Demo';
 
-        // ... (rest of the function for activating demo mode) ...
-        // (The code below this point should be your existing logic for loading sample data)
         this.datasets = { ...this.sampleData };
         this.validatedCount = this.requiredDatasets.length;
         this.requiredDatasets.forEach(dataset => {
@@ -884,14 +838,11 @@ toggleDemoMode() {
 
 
     } else {
-        // --- Deactivate Demo Mode ---
-        document.body.classList.remove('demo-mode-active'); // This is the key line to reset content position
+        document.body.classList.remove('demo-mode-active');
         demoBanner.classList.add('hidden');
         demoBtn.textContent = '🎮 Demo Mode';
         
-        // ... (rest of the function for deactivating demo mode) ...
-        // (The code below this point should be your existing logic for resetting the system)
-        this.resetSystem(true); // Assuming resetSystem is modified to accept a boolean
+        this.resetSystem(true);
         this.addAuditEntry('Demo mode deactivated', 'Returned to normal operation mode');
         this.showNotification('Demo Mode Exited', 'Upload your own data to continue.', 'info', '📁');
     }
@@ -1079,15 +1030,13 @@ toggleDemoMode() {
         return csvRows.join('\n');
     }
     
-    // NEW and CORRECTED resetSystem function
-resetSystem(isExitingDemo = false) { // A parameter is added here
+resetSystem(isExitingDemo = false) {
     if (!isExitingDemo && Object.keys(this.datasets).length > 0) {
         if (!confirm('This will reset all data and results. Continue?')) {
             return;
         }
     }
 
-    // Clear all data
     this.datasets = {};
     this.validationResults = {};
     this.optimizationResults = null;
@@ -1095,15 +1044,12 @@ resetSystem(isExitingDemo = false) { // A parameter is added here
     this.validatedCount = 0;
     this.totalRecords = 0;
     this.coordinatesFound = 0;
-    // this.isDemoMode is handled by toggleDemoMode, no need to set it to false here
-
-    // Reset maps
+    
     if (this.map) {
         this.map.remove();
         this.map = null;
     }
 
-    // Reset UI
     document.querySelectorAll('.dataset-card').forEach(card => {
         card.classList.remove('uploaded', 'error', 'validating');
     });
@@ -1122,7 +1068,6 @@ resetSystem(isExitingDemo = false) { // A parameter is added here
         input.value = '';
     });
 
-    // Reset progress
     document.querySelectorAll('.progress-fill').forEach(bar => {
         bar.style.width = '0%';
     });
@@ -1140,7 +1085,6 @@ resetSystem(isExitingDemo = false) { // A parameter is added here
     this.updateValidationSummary();
     this.resetScenarios();
 
-    // Only show notification if it's a manual reset, not when exiting demo
     if (!isExitingDemo) {
         this.addAuditEntry('System reset', 'All data and results cleared - system returned to initial state');
         this.showNotification('System Reset', 'All data cleared. Upload datasets or try demo mode.', 'info', '🔄');
@@ -1170,17 +1114,14 @@ resetSystem(isExitingDemo = false) { // A parameter is added here
             details
         });
         
-        // Keep only last 100 entries
         if (this.auditTrail.length > 100) {
             this.auditTrail = this.auditTrail.slice(-100);
         }
     }
     
-    // NEW FUNCTION - This uses .innerHTML, which correctly renders HTML tags
 showNotification(title, message, type = 'info', icon = 'ℹ️') {
     const notification = document.getElementById('notification');
     
-    // Create the structured HTML for the notification
     const notificationHTML = `
         <div class="notification-icon">${icon}</div>
         <div class="notification-content">
@@ -1190,11 +1131,9 @@ showNotification(title, message, type = 'info', icon = 'ℹ️') {
         <button class="notification-close" onclick="hideNotification()">&times;</button>
     `;
 
-    // Set the content using .innerHTML
     notification.innerHTML = notificationHTML;
     notification.className = `notification show ${type}`;
     
-    // Automatically hide the notification after 5 seconds
     setTimeout(() => {
         notification.classList.remove('show');
     }, 5000);
@@ -1213,10 +1152,8 @@ showNotification(title, message, type = 'info', icon = 'ℹ️') {
     }
 }
 
-// Initialize the complete UrbanFlow2 system
 const app = new UrbanFlow2CompleteSystem();
 
-// Global function bindings for HTML onclick handlers
 window.triggerFileUpload = (datasetName) => {
     const input = document.querySelector(`input[data-dataset="${datasetName}"]`);
     if (input) input.click();
@@ -1236,14 +1173,12 @@ window.resetSystem = () => app.resetSystem();
 window.closeModal = (modalId) => app.closeModal(modalId);
 window.hideNotification = () => app.hideNotification();
 
-// Handle modal clicks to close when clicking outside
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         e.target.classList.add('hidden');
     }
 });
 
-// Error handling
 window.addEventListener('error', (e) => {
     console.error('Application Error:', e.message);
     if (app) {
@@ -1262,18 +1197,14 @@ console.log('✅ Government of India styling and aesthetics');
 console.log('✅ Full audit trail, report generation, export functionality');
 console.log('✅ Demo mode with sample Indian port/plant data');
 console.log('✅ All buttons functional - COMPLETE IMPLEMENTATION!');
-// === Language Selection Logic ===
-// === Language Selection Logic (Corrected) ===
 
-// This function shows or hides the language dropdown menu
 function toggleLanguageMenu() {
     document.getElementById('languageMenu').classList.toggle('hidden');
 }
 
-// This function is called when you click on an option in the menu
 function selectLanguage(language) {
     const menu = document.getElementById('languageMenu');
-    menu.classList.add('hidden'); // Always hide the menu after a selection is made
+    menu.classList.add('hidden');
 
     if (language === 'hindi') {
         app.showNotification(
@@ -1287,7 +1218,6 @@ function selectLanguage(language) {
             'info', 
             '🚧'
         );
-    // CORRECTED: The closing brace "}" was removed from here...
     } else if (language === 'english') {
         app.showNotification(
             'Language Selected',
@@ -1296,12 +1226,10 @@ function selectLanguage(language) {
             '✅'
         );
     }
-} // ...and correctly placed here to close the function.
+}
 
-// This closes the language menu if you click anywhere else on the page
 window.addEventListener('click', function(event) {
     const langMenu = document.getElementById('languageMenu');
-    // Add a check to ensure langMenu exists before proceeding
     if (langMenu) {
         const langButton = langMenu.previousElementSibling; 
 
