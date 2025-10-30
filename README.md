@@ -1,6 +1,6 @@
-# 🇮🇳 UrbanFlow2 - AI Logistics Optimization Platform : FRONTEND SIMULATION 
+#  UrbanFlow2 - AI Logistics Optimization Platform : FRONTEND SIMULATION 
 
-
+#  Working on backend intergration
 
 UrbanFlow2 is a functional prototype of an AI-powered logistics platform, designed for the Smart India Hackathon. It transforms India's complex supply chains from a reactive cost center into a predictive, strategic advantage using a hybrid AI approach.
 
